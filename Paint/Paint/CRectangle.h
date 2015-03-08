@@ -12,6 +12,8 @@ public:
   void Update();
   void Draw();
   void Move(float x_offset, float y_offset);
+  void Resize(float x_offset, float y_offset);
+  void Rotate(float x_offset, float y_offset);
 
 private:
   float x_;
@@ -24,6 +26,7 @@ private:
   unsigned char b_;
 
   int rotation_;
+
   struct BorderRect
   {
     float x;
@@ -33,5 +36,5 @@ private:
   };
 
   //These rectangles will be drawn on this rectangle's borders when selected = true
-  BorderRect border_rects_[4];
+  BorderRect border_rects_[8];
 };

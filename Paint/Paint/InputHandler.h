@@ -11,7 +11,7 @@ class Paint;
 class InputHandler
 {
 public:
-  InputHandler(bool* quit, std::function<void()> resize_function);
+  InputHandler(bool* quit, std::function<void()> resize_function, std::function<void(int, int)> handle_click_function);
 	~InputHandler(void);
 	void handleInput(SDL_Event event);
 	bool isKeyPressed(SDL_Keycode key);
@@ -19,6 +19,7 @@ public:
   void set_shape(IShape* shape) { shape_ = shape; }
 private:
   std::function<void()> p_resize_function_;
+  std::function<void(int, int)> p_handle_click_function;
   bool* p_quit_;
 	void handleKeyboard(SDL_KeyboardEvent kbEvent);
   void HandleMouseButton(SDL_MouseButtonEvent event);

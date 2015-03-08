@@ -9,7 +9,7 @@
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
-inputHandler_(&quit, std::bind(&Paint::resize, this))
+inputHandler_(&quit, std::bind(&Paint::resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1, std::placeholders::_2))
 {
   shape_ = new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0);
   shape_->selected = true;
@@ -154,7 +154,6 @@ void Paint::draw()
 void Paint::resize()
 {
   int w, h;
-  float aspectRatio;
   SDL_GetWindowSize(pSDLWindow_, &w, &h);
 
   glViewport(0, 0, w, h);
@@ -166,6 +165,11 @@ void Paint::resize()
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+}
+
+void Paint::HandleClick(int mouse_x, int mouse_y)
+{
+  printf("handleclick\n");
 }
 
 void Paint::run() {

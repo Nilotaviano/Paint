@@ -4,9 +4,10 @@
 #include "Paint.h"
 
 
-InputHandler::InputHandler(bool* quit, std::function<void()> resize_function = nullptr)
+InputHandler::InputHandler(bool* quit, std::function<void()> resize_function, std::function<void(int, int)> handle_click_function)
 : p_quit_(quit),
 p_resize_function_(resize_function),
+p_handle_click_function(handle_click_function),
 l_mouse_button_(false),
 shape_(nullptr)
 {
@@ -68,6 +69,7 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
   switch (event.type) {
   case SDL_MOUSEBUTTONDOWN:
     if (event.button == SDL_BUTTON_LEFT) {
+      p_handle_click_function(event.x, event.y);
       l_mouse_button_ = true;
     }
     break;
@@ -82,7 +84,7 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
 
 void InputHandler::HandleMouseMotion(SDL_MouseMotionEvent event) {
   if (l_mouse_button_ && shape_ != nullptr) {
-    shape_->Move(event.xrel, -event.yrel);  //Inverted yrel because SDL considers 0 to be the top, while openGL top is set to be 1
+    shape_->Move(event.xrel, -event.yrel);  //Inverted yrel because SDL considers 0 to be the top, while openGL's top is set to be 1
   }
 }
 

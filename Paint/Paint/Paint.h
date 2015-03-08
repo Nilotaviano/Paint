@@ -18,6 +18,7 @@ private:
 	bool initGL();
   void resize();
 	void close();
+  void HandleClick(int mouse_x, int mouse_y);
 	const int SCREEN_WIDTH;
 	const int SCREEN_HEIGHT;
 	SDL_Window* pSDLWindow_;
