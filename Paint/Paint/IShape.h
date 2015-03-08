@@ -1,5 +1,8 @@
 #pragma once
 
+#include <SDL.h>
+#include <stdio.h>
+
 class IShape
 {
 public:
@@ -17,5 +20,29 @@ public:
 
   virtual bool IsMouseOver(float mouse_x, float mouse_y) { return false; }
 
+  virtual void ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset) { printf("IReceiveMouseMotion\n"); }
+
   bool selected;
+
+protected:
+  enum class BorderRectPosition {
+    LEFT,
+    RIGHT,
+    TOP,
+    BOTTOM,
+    BOTTOM_LEFT,
+    BOTTOM_RIGHT,
+    TOP_LEFT,
+    TOP_RIGHT
+  };
+
+  struct BorderRect
+  {
+    float x;
+    float y;
+    float width;
+    float height;
+    BorderRectPosition position;
+    bool selected = false;
+  };
 };

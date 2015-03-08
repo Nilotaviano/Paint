@@ -84,7 +84,7 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
 
 void InputHandler::HandleMouseMotion(SDL_MouseMotionEvent event) {
   if (l_mouse_button_ && shape_ != nullptr) {
-    shape_->Move(event.xrel, -event.yrel);  //Inverted yrel because SDL considers 0 to be the top, while openGL's top is set to be 1
+    shape_->ReceiveMouseMotion(event.xrel, -event.yrel);  
   }
 }
 

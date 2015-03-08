@@ -1,8 +1,6 @@
 #pragma once
 #include "IShape.h"
 
-#include <SDL.h>
-
 class CRectangle :
   public IShape
 {
@@ -12,9 +10,10 @@ public:
   void Update();
   void Draw();
   void Move(float x_offset, float y_offset);
-  void Resize(float x_offset, float y_offset);
+  void Resize(float x_offset, float y_offset, BorderRectPosition position);
   void Rotate(float x_offset, float y_offset);
   bool IsMouseOver(float mouse_x, float mouse_y);
+  void ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset);
 
 private:
   float x_;
@@ -27,14 +26,6 @@ private:
   unsigned char b_;
 
   int rotation_;
-
-  struct BorderRect
-  {
-    float x;
-    float y;
-    float width;
-    float height;
-  };
 
   //These rectangles will be drawn on this rectangle's borders when selected = true
   BorderRect border_rects_[8];
