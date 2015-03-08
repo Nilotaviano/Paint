@@ -98,6 +98,24 @@ void CRectangle::Update()
 
 }
 
+bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
+{
+  //Convert mouse coordinates to "my world" coordinates
+  mouse_x = (mouse_x - 320) / 320;
+  mouse_y = -(mouse_y - 480);
+  mouse_y = (mouse_y - 240) / 240;
+  printf("x: %f y: %f\n", mouse_x, mouse_y);
+
+  if (mouse_x > x_ && mouse_x < x_ + width_ &&
+    mouse_y > y_ && mouse_y < y_ + height_)
+  {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 void CRectangle::Move(float mouse_x_offset, float mouse_y_offset)
 {
   x_ += mouse_x_offset / 320;

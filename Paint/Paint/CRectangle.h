@@ -14,6 +14,7 @@ public:
   void Move(float x_offset, float y_offset);
   void Resize(float x_offset, float y_offset);
   void Rotate(float x_offset, float y_offset);
+  bool IsMouseOver(float mouse_x, float mouse_y);
 
 private:
   float x_;

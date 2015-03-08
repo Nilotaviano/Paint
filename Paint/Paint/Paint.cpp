@@ -12,7 +12,6 @@ SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1, std::placeholders::_2))
 {
   shape_ = new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0);
-  shape_->selected = true;
 }
 
 Paint::~Paint()
@@ -139,9 +138,6 @@ void Paint::close()
 void Paint::update() 
 {
 	//pStateManager_->update(inputHandler_, currentFrameTime - previousFrameTime);
-  if (inputHandler_.isLMouseButtonPressed()) {
-    inputHandler_.set_shape(shape_);
-  }
 }
 
 void Paint::draw()
@@ -169,7 +165,10 @@ void Paint::resize()
 
 void Paint::HandleClick(int mouse_x, int mouse_y)
 {
-  printf("handleclick\n");
+  if (shape_->IsMouseOver(mouse_x, mouse_y)) {
+    shape_->selected = true;
+    inputHandler_.set_shape(shape_);
+  }
 }
 
 void Paint::run() {
