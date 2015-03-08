@@ -7,7 +7,8 @@
 InputHandler::InputHandler(bool* quit, std::function<void()> resize_function = nullptr)
 : p_quit_(quit),
 p_resize_function_(resize_function),
-l_mouse_button_(false)
+l_mouse_button_(false),
+shape_(nullptr)
 {
   for (int i = 0; i < KEYBOARD_SIZE; i++) {
     keys_[i] = false;
@@ -69,15 +70,20 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
     if (event.button == SDL_BUTTON_LEFT) {
       l_mouse_button_ = true;
     }
+    break;
   case SDL_MOUSEBUTTONUP:
     if (event.button == SDL_BUTTON_LEFT) {
+      shape_ = nullptr;
       l_mouse_button_ = false;
     }
+    break;
   }
 }
 
 void InputHandler::HandleMouseMotion(SDL_MouseMotionEvent event) {
-
+  if (l_mouse_button_ && shape_ != nullptr) {
+    shape_->Move(event.xrel, -event.yrel);  //Inverted yrel because SDL considers 0 to be the top, while openGL top is set to be 1
+  }
 }
 
 bool InputHandler::isKeyPressed(SDL_Keycode key)

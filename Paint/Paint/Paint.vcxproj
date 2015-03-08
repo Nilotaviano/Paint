@@ -16,14 +16,17 @@
     <ClCompile Include="Paint.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Rectangle.cpp" />
+    <ClCompile Include="CRectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="IShape.h" />
     <ClInclude Include="Paint.h" />
     <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="CRectangle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2071D400-269A-4C53-A689-00DC65273B56}</ProjectGuid>
@@ -56,8 +59,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>\SDL\include;\SDL\SDL2_ttf-2.0.12\include;$(IncludePath)</IncludePath>
-    <LibraryPath>\SDL\lib\win32;\SDL\SDL2_ttf-2.0.12\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\SDL\include;$(SolutionDir)\SDL\SDL2_ttf-2.0.12\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\SDL\lib\win32;$(SolutionDir)\SDL\SDL2_ttf-2.0.12\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -74,6 +77,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_ttf.lib;OpenGL32.Lib;GlU32.Lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

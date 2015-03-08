@@ -1,6 +1,5 @@
 #pragma once
 #include <SDL.h>
-#include "Font.h"
 
 class Button
 {
@@ -16,5 +15,4 @@ private:
 	float height_;
 	SDL_Color color_;
 	SDL_Color textColor_;
-	Font font_;
 };

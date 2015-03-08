@@ -4,11 +4,15 @@
 #include <SDL_opengl.h>
 #include <GL\GLU.h>
 
+#include "CRectangle.h"
+
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::resize, this))
 {
+  shape_ = new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0);
+  shape_->selected = true;
 }
 
 Paint::~Paint()
@@ -135,11 +139,16 @@ void Paint::close()
 void Paint::update() 
 {
 	//pStateManager_->update(inputHandler_, currentFrameTime - previousFrameTime);
+  if (inputHandler_.isLMouseButtonPressed()) {
+    inputHandler_.set_shape(shape_);
+  }
 }
 
 void Paint::draw()
 {
 	//pStateManager_->draw();
+  glClear(GL_COLOR_BUFFER_BIT);
+  shape_->Draw();
 }
 
 void Paint::resize()
@@ -169,8 +178,6 @@ void Paint::run() {
 		SDL_Event event;
 		currentFrameTime = SDL_GetTicks();
 		previousFrameTime = currentFrameTime;
-
-    //pStateManager_->changeState(MenuState::getInstance(pStateManager_));
 
 		while (!quit)
 		{

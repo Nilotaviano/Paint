@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <functional>
+#include "IShape.h"
 
 
 #define KEYBOARD_SIZE 256
@@ -14,6 +15,8 @@ public:
 	~InputHandler(void);
 	void handleInput(SDL_Event event);
 	bool isKeyPressed(SDL_Keycode key);
+  bool isLMouseButtonPressed() { return l_mouse_button_; }
+  void set_shape(IShape* shape) { shape_ = shape; }
 private:
   std::function<void()> p_resize_function_;
   bool* p_quit_;
@@ -22,4 +25,6 @@ private:
   void HandleMouseMotion(SDL_MouseMotionEvent event);
 	bool keys_[KEYBOARD_SIZE];
   bool l_mouse_button_;
+
+  IShape* shape_;
 };

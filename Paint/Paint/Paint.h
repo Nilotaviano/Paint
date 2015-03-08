@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include "InputHandler.h"
+#include "IShape.h"
 
 class Paint
 {
@@ -24,4 +25,5 @@ private:
 	bool quit;
 	int previousFrameTime;
 	int currentFrameTime;
+  IShape* shape_;
 };

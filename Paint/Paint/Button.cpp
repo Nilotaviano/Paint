@@ -3,7 +3,6 @@
 
 
 Button::Button(float x, float y, float width, float height, int r, int g, int b, char* text, int font_size)
-: font_(text, font_size, "fonts/game_over.TTF", x + width / 2, y + height / 2, 255, 255, 255)
 {
 	selected = false;
 	x_ = x;
@@ -50,5 +49,4 @@ void Button::draw() {
 		x_ + width_,
 		y_ + height_);
 
-	font_.draw();
 }
