@@ -12,16 +12,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="IShape.cpp" />
     <ClCompile Include="Paint.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Rectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
-    <ClInclude Include="Font.h" />
+    <ClInclude Include="IShape.h" />
     <ClInclude Include="Paint.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="Rectangle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2071D400-269A-4C53-A689-00DC65273B56}</ProjectGuid>

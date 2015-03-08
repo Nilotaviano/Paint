@@ -4,9 +4,10 @@
 #include "Paint.h"
 
 
-InputHandler::InputHandler(bool* quit, std::function<void()> resize_function)
+InputHandler::InputHandler(bool* quit, std::function<void()> resize_function = nullptr)
 : p_quit_(quit),
-p_resize_function_(resize_function)
+p_resize_function_(resize_function),
+l_mouse_button_(false)
 {
   for (int i = 0; i < KEYBOARD_SIZE; i++) {
     keys_[i] = false;
@@ -25,12 +26,17 @@ void InputHandler::handleInput(SDL_Event event)
   case SDL_KEYDOWN:
     handleKeyboard(event.key);
     break;
-  case SDL_WINDOWEVENT:
-    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-      p_resize_function_();
-    }
+  case SDL_MOUSEBUTTONDOWN:
+  case SDL_MOUSEBUTTONUP:
+    HandleMouseButton(event.button);
     break;
   case SDL_MOUSEMOTION:
+    HandleMouseMotion(event.motion);
+    break;
+  case SDL_WINDOWEVENT:
+    if (event.window.event == SDL_WINDOWEVENT_RESIZED && p_resize_function_ != nullptr) {
+      p_resize_function_();
+    }
     break;
   case SDL_QUIT:
     *p_quit_ = true;
@@ -55,6 +61,23 @@ void InputHandler::handleKeyboard(SDL_KeyboardEvent kbEvent)
       break;
     }
   }
+}
+
+void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
+  switch (event.type) {
+  case SDL_MOUSEBUTTONDOWN:
+    if (event.button == SDL_BUTTON_LEFT) {
+      l_mouse_button_ = true;
+    }
+  case SDL_MOUSEBUTTONUP:
+    if (event.button == SDL_BUTTON_LEFT) {
+      l_mouse_button_ = false;
+    }
+  }
+}
+
+void InputHandler::HandleMouseMotion(SDL_MouseMotionEvent event) {
+
 }
 
 bool InputHandler::isKeyPressed(SDL_Keycode key)

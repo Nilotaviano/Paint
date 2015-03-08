@@ -4,9 +4,6 @@
 #include <SDL_opengl.h>
 #include <GL\GLU.h>
 
-#include "MenuState.h"
-#include "font.h"
-
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
