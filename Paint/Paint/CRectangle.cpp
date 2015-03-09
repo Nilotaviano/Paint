@@ -1,4 +1,4 @@
-#include "CRectangle.h"
+﻿#include "CRectangle.h"
 
 #include <SDL_opengl.h>
 #include <GL\GLU.h>
@@ -159,5 +159,76 @@ void CRectangle::Move(float mouse_x_offset, float mouse_y_offset)
 
 void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
 {
-  printf("CRectangle::Resize\n");
+  switch (position) {
+    
+    case LEFT:
+    x_ += mouse_x_offset;
+    width_ -= mouse_x_offset;
+    break;
+    
+    case RIGHT:
+    width_ += mouse_x_offset;
+    break;
+    
+    case TOP:
+    height_ += mouse_y_offset;
+    break;
+    
+    case DOWN:
+    y_ += mouse_y_offset;
+    height_ -= mouse_y_offset;
+    break;
+    
+    case BOTTOM_LEFT:
+    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset;
+      width_ -= mouse_x_offset;
+      y_ += mouse_x_offset;
+      height_ -= mouse_x_offset;
+    }
+    else {
+      x_ += mouse_y_offset;
+      width_ -= mouse_y_offset;
+      y_ += mouse_y_offset;
+      height_ -= mouse_y_offset;
+    }
+    break;
+    
+    case BOTTOM_RIGHT:
+    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      width_ += mouse_x_offset;
+      y_ -= mouse_x_offset;
+      height_ += mouse_x_offset;
+    }
+    else {
+      width_ -= mouse_y_offset;
+      y_ += mouse_y_offset;
+      height_ -= mouse_y_offset;
+    }
+    break;
+    
+    case TOP_LEFT:
+    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset;
+      width_ -= mouse_x_offset;
+      height_ -= mouse_x_offset;
+    }
+    else {
+      x_ -= mouse_y_offset;
+      width_ += mouse_y_offset;
+      height_ += mouse_y_offset;
+    }
+    break;
+    
+    case TOP_RIGHT:
+    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      width_ += mouse_x_offset;
+      height_ += mouse_x_offset;
+    }
+    else {
+      width_ += mouse_y_offset;
+      height_ += mouse_y_offset;
+    }
+    break;
+  }
 }
