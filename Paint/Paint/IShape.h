@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <SDL.h>
 #include <stdio.h>
@@ -40,8 +40,8 @@ protected:
   {
     float x;
     float y;
-    float width;
-    float height;
+    float width = 0.02f;
+    float height = 0.02f;
     BorderRectPosition position;
     bool selected = false;
   };
