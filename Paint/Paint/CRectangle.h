@@ -29,4 +29,5 @@ private:
 
   //These rectangles will be drawn on this rectangle's borders when selected = true
   BorderRect border_rects_[8];
+  void set_border_rects_();
 };

@@ -2,6 +2,7 @@
 
 #include <SDL_opengl.h>
 #include <GL\GLU.h>
+#include <math.h>
 #include <stdio.h>
 
 
@@ -12,6 +13,10 @@ r_(r), g_(g), b_(b),
 rotation_(rotation),
 IShape()
 {
+  set_border_rects_();
+}
+
+void CRectangle::set_border_rects_() {
   //Sides
   //Left
   border_rects_[0].x = -0.01;
@@ -48,7 +53,6 @@ IShape()
   border_rects_[7].y = -0.01 + height_;
   border_rects_[7].position = BorderRectPosition::TOP_RIGHT;
 }
-
 
 CRectangle::~CRectangle()
 {
@@ -130,7 +134,7 @@ void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
       return;
     }
   }
-  
+
   //If none of the border rects are selected, it means that the this CRectangle itself is selected, therefore it moves.
   Move(mouse_x_offset, mouse_y_offset);
 }
@@ -143,28 +147,31 @@ void CRectangle::Move(float mouse_x_offset, float mouse_y_offset)
 
 void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
 {
+  mouse_x_offset = mouse_x_offset / 320;
+  mouse_y_offset = mouse_y_offset / 240;
+
   switch (position) {
-    
-    case LEFT:
+
+  case BorderRectPosition::LEFT:
     x_ += mouse_x_offset;
     width_ -= mouse_x_offset;
     break;
-    
-    case RIGHT:
+
+  case BorderRectPosition::RIGHT:
     width_ += mouse_x_offset;
     break;
-    
-    case TOP:
+
+  case BorderRectPosition::TOP:
     height_ += mouse_y_offset;
     break;
-    
-    case DOWN:
+
+  case BorderRectPosition::BOTTOM:
     y_ += mouse_y_offset;
     height_ -= mouse_y_offset;
     break;
-    
-    case BOTTOM_LEFT:
-    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+
+  case BorderRectPosition::BOTTOM_LEFT:
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
       x_ += mouse_x_offset;
       width_ -= mouse_x_offset;
       y_ += mouse_x_offset;
@@ -177,9 +184,9 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
       height_ -= mouse_y_offset;
     }
     break;
-    
-    case BOTTOM_RIGHT:
-    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+
+  case BorderRectPosition::BOTTOM_RIGHT:
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
       width_ += mouse_x_offset;
       y_ -= mouse_x_offset;
       height_ += mouse_x_offset;
@@ -190,9 +197,9 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
       height_ -= mouse_y_offset;
     }
     break;
-    
-    case TOP_LEFT:
-    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+
+  case BorderRectPosition::TOP_LEFT:
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
       x_ += mouse_x_offset;
       width_ -= mouse_x_offset;
       height_ -= mouse_x_offset;
@@ -203,9 +210,9 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
       height_ += mouse_y_offset;
     }
     break;
-    
-    case TOP_RIGHT:
-    if((abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+
+  case BorderRectPosition::TOP_RIGHT:
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
       width_ += mouse_x_offset;
       height_ += mouse_x_offset;
     }
@@ -215,4 +222,6 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     }
     break;
   }
+
+  set_border_rects_();
 }
