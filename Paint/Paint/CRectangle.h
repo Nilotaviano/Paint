@@ -1,11 +1,11 @@
-#pragma once
+﻿#pragma once
 #include "IShape.h"
 
 class CRectangle :
   public IShape
 {
 public:
-  CRectangle(float x, float y, float height, float width, unsigned char r = 128, unsigned char g = 128, unsigned char b = 128, int rotation = 0);
+  CRectangle(float x, float y, float height, float width, unsigned char r = 128, unsigned char g = 128, unsigned char b = 128, float rotation = 0);
   ~CRectangle();
   void Update();
   void Draw();
@@ -25,7 +25,7 @@ private:
   unsigned char g_;
   unsigned char b_;
 
-  int rotation_;
+  float rotation_;
 
   //These rectangles will be drawn on this rectangle's borders when selected = true
   BorderRect border_rects_[8];
