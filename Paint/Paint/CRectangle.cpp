@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 
-CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, int rotation)
+CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float rotation)
 : x_(x), y_(y),
 width_(width), height_(height),
 r_(r), g_(g), b_(b),
@@ -64,6 +64,8 @@ void CRectangle::Draw()
   glPushMatrix();
 
   glColor3ub(r_, g_, b_);
+
+  glRotatef(rotation_, width_ / 2, height_ / 2, 0);
 
   glTranslatef(x_, y_, 0);
   glRectf(
