@@ -225,3 +225,8 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
 
   set_border_rects_();
 }
+
+void CRectangle::Rotate(float mouse_x_offset, float mouse_y_offset)
+{
+  
+}
