@@ -75,7 +75,24 @@ void CRectangle::Draw()
     height_
     );
 
-  //Will draw 4 small gray squares on each corner of this rectangle
+  glLineWidth(2.5);
+  glColor3f(0.0f, 0.0f, 0.0f);
+
+  glBegin(GL_LINES);
+    glVertex2f(0, 0);
+    glVertex2f(width_, 0);
+
+    glVertex2f(width_, 0);
+    glVertex2f(width_, height_);
+
+    glVertex2f(width_, height_);
+    glVertex2f(0, height_);
+
+    glVertex2f(0, height_);
+    glVertex2f(0, 0);
+  glEnd();
+
+  //Will Draw 4 small gray squares on each corner of this rectangle
   if (selected) {
     glColor3ub(128, 128, 128);
 

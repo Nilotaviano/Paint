@@ -75,7 +75,6 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
     break;
   case SDL_MOUSEBUTTONUP:
     if (event.button == SDL_BUTTON_LEFT) {
-      shape_ = nullptr;
       l_mouse_button_ = false;
     }
     break;
@@ -95,5 +94,18 @@ bool InputHandler::isKeyPressed(SDL_Keycode key)
   }
   else {
     return false;
+  }
+}
+
+void InputHandler::set_shape(IShape* shape)
+{
+  if (shape_ != nullptr) {
+    shape_->selected = false;
+  }
+
+  shape_ = shape; 
+  //passed shape can still be a nullptr
+  if (shape_ != nullptr) {
+    shape->selected = true;
   }
 }

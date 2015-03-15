@@ -2,6 +2,6 @@
 
 int main(int argc, char* args[])
 {
-	Paint::Paint().run();
+	Paint::Paint().Run();
 	return 0;
 }
