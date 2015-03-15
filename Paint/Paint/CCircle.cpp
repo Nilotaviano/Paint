@@ -9,7 +9,7 @@ CCircle::CCircle(float x, float y, float height, float width, unsigned char r, u
 : x_(x), y_(y),
 width_(width), height_(height),
 r_(r), g_(g), b_(b),
-angle_(45),
+angle_(angle),
 IShape()
 {
   set_border_rects_();
@@ -67,16 +67,14 @@ void CCircle::Draw()
 
   glPushMatrix();
   
+  glColor3ub(r_, g_, b_);
+
   glTranslatef(x_, y_, 0);
 
-
-  //Center on origin before angle
+  //Center on origin before rotating
   glTranslatef((x_radius), (y_radius), 0);
   glRotatef(angle_, 0, 0, 1.0f);
   glTranslatef(-(x_radius), -(y_radius), 0);
-
-
-  glColor3ub(r_, g_, b_);
 
   //Filled circle
   glBegin(GL_TRIANGLE_FAN);
@@ -135,8 +133,8 @@ bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
   mouse_y = (mouse_y - 240) / 240;
 
   /*Rotate point*/
-  if (angle_ > 0) {
-    float rad = angle_ * M_PI / 180;
+  if (angle_ != 0) {
+    float rad = (-angle_) * M_PI / 180;
     float s = sin(rad);
     float c = cos(rad);
     //Translate back to origin
@@ -168,15 +166,6 @@ bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
   click_focus = (pow(mouse_x - (x_ + x_radius), 2) / pow(x_radius, 2)) + (pow(mouse_y - (y_ + y_radius), 2) / pow(y_radius, 2));
 
   if (click_focus <= 1) {
-    return true;
-  }
-  else {
-    return false;
-  }
-
-  if (mouse_x > x_ && mouse_x < x_ + width_ &&
-    mouse_y > y_ && mouse_y < y_ + height_)
-  {
     return true;
   }
   else {

@@ -61,13 +61,20 @@ CRectangle::~CRectangle()
 
 void CRectangle::Draw()
 {
+  float x_radius = width_ / 2;
+  float y_radius = height_ / 2;
+
   glPushMatrix();
 
   glColor3ub(r_, g_, b_);
 
-  glRotatef(angle_, width_ / 2, height_ / 2, 0);
-
   glTranslatef(x_, y_, 0);
+
+  //Center on origin before rotating
+  glTranslatef((x_radius), (y_radius), 0);
+  glRotatef(angle_, 0, 0, 1.0f);
+  glTranslatef(-(x_radius), -(y_radius), 0);
+
   glRectf(
     0,
     0,
@@ -115,10 +122,29 @@ void CRectangle::Update()
 
 bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
 {
+  float x_radius = width_ / 2;
+  float y_radius = height_ / 2;
+
   //Convert mouse coordinates to "my world" coordinates
   mouse_x = (mouse_x - 320) / 320;
   mouse_y = -(mouse_y - 480);
   mouse_y = (mouse_y - 240) / 240;
+
+  /*Rotate point*/
+  if (angle_ != 0) {
+    float rad = (-angle_) * M_PI / 180;
+    float s = sin(rad);
+    float c = cos(rad);
+    //Translate back to origin
+    mouse_x -= (x_ + x_radius);
+    mouse_y -= (y_ + y_radius);
+    //Rotate around origin
+    float new_mouse_x = mouse_x * c - mouse_y * s;
+    float new_mouse_y = mouse_x * s + mouse_y * c;
+    //Translate back
+    mouse_x = new_mouse_x + (x_ + x_radius);
+    mouse_y = new_mouse_y + (y_ + y_radius);
+  }
 
   if (selected) {
     for (BorderRect &rect : border_rects_) {
