@@ -6,11 +6,11 @@
 #include <stdio.h>
 
 
-CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float rotation)
+CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float angle)
 : x_(x), y_(y),
 width_(width), height_(height),
 r_(r), g_(g), b_(b),
-rotation_(rotation),
+angle_(angle),
 IShape()
 {
   set_border_rects_();
@@ -65,7 +65,7 @@ void CRectangle::Draw()
 
   glColor3ub(r_, g_, b_);
 
-  glRotatef(rotation_, width_ / 2, height_ / 2, 0);
+  glRotatef(angle_, width_ / 2, height_ / 2, 0);
 
   glTranslatef(x_, y_, 0);
   glRectf(
@@ -270,5 +270,5 @@ void CRectangle::Rotate(float mouse_x_offset, float mouse_y_offset)
   mouse_x_offset = mouse_x_offset / 320;
   mouse_y_offset = mouse_y_offset / 240;
   
-  rotation_ += mouse_x_offset * 360;
+  angle_ += mouse_x_offset * 360;
 }

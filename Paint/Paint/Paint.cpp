@@ -15,7 +15,7 @@ inputHandler_(&quit, std::bind(&Paint::Resize, this), std::bind(&Paint::HandleCl
 p_quad_button_(new ImageButton(-0.95f, 0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
 p_circle_button_(new ImageButton(-0.95f, -0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
 {
-  shapes_.push_front(new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0));
+  shapes_.push_front(new CCircle(0, 0, 0.2, 0.2, 0, 255, 0));
 }
 
 Paint::~Paint()

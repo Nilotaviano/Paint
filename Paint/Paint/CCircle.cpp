@@ -5,11 +5,11 @@
 #include <math.h>
 #include <stdio.h>
 
-CCircle::CCircle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float rotation)
+CCircle::CCircle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float angle)
 : x_(x), y_(y),
 width_(width), height_(height),
 r_(r), g_(g), b_(b),
-rotation_(rotation),
+angle_(45),
 IShape()
 {
   set_border_rects_();
@@ -66,9 +66,15 @@ void CCircle::Draw()
   float y_radius = height_ / 2;
 
   glPushMatrix();
-
-  glRotatef(rotation_, width_ / 2, height_ / 2, 0);
+  
   glTranslatef(x_, y_, 0);
+
+
+  //Center on origin before angle
+  glTranslatef((x_radius), (y_radius), 0);
+  glRotatef(angle_, 0, 0, 1.0f);
+  glTranslatef(-(x_radius), -(y_radius), 0);
+
 
   glColor3ub(r_, g_, b_);
 
@@ -127,6 +133,23 @@ bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
   mouse_x = (mouse_x - 320) / 320;
   mouse_y = -(mouse_y - 480);
   mouse_y = (mouse_y - 240) / 240;
+
+  /*Rotate point*/
+  if (angle_ > 0) {
+    float rad = angle_ * M_PI / 180;
+    float s = sin(rad);
+    float c = cos(rad);
+    //Translate back to origin
+    mouse_x -= (x_ + x_radius);
+    mouse_y -= (y_ + y_radius);
+    //Rotate around origin
+    float new_mouse_x = mouse_x * c - mouse_y * s;
+    float new_mouse_y = mouse_x * s + mouse_y * c;
+    //Translate back
+    mouse_x = new_mouse_x + (x_ + x_radius);
+    mouse_y = new_mouse_y + (y_ + y_radius);
+  }
+
 
   if (selected) {
     for (BorderRect &rect : border_rects_) {
@@ -287,5 +310,5 @@ void CCircle::Rotate(float mouse_x_offset, float mouse_y_offset)
   mouse_x_offset = mouse_x_offset / 320;
   mouse_y_offset = mouse_y_offset / 240;
 
-  rotation_ += mouse_x_offset * 360;
+  angle_ += mouse_x_offset * 360;
 }

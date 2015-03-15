@@ -4,7 +4,7 @@ class CCircle :
   public IShape
 {
 public:
-  CCircle(float x, float y, float height, float width, unsigned char r = 128, unsigned char g = 128, unsigned char b = 128, float rotation = 0);
+  CCircle(float x, float y, float height, float width, unsigned char r = 128, unsigned char g = 128, unsigned char b = 128, float angle = 0);
   ~CCircle();
   void Update();
   void Draw();
@@ -24,7 +24,7 @@ private:
   unsigned char g_;
   unsigned char b_;
 
-  float rotation_;
+  float angle_;
 
   //These rectangles will be drawn on this circle's borders when selected = true
   BorderRect border_rects_[8];
