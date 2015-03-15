@@ -1,12 +1,11 @@
-﻿#include "CRectangle.h"
+#include "CCircle.h"
 
 #include <SDL_opengl.h>
 #include <GL\GLU.h>
 #include <math.h>
 #include <stdio.h>
 
-
-CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float rotation)
+CCircle::CCircle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float rotation)
 : x_(x), y_(y),
 width_(width), height_(height),
 r_(r), g_(g), b_(b),
@@ -16,7 +15,7 @@ IShape()
   set_border_rects_();
 }
 
-void CRectangle::set_border_rects_() {
+void CCircle::set_border_rects_() {
   //Sides
   //Left
   border_rects_[0].x = -0.01;
@@ -54,45 +53,50 @@ void CRectangle::set_border_rects_() {
   border_rects_[7].position = BorderRectPosition::TOP_RIGHT;
 }
 
-CRectangle::~CRectangle()
+CCircle::~CCircle()
 {
 
 }
 
-void CRectangle::Draw()
+void CCircle::Draw()
 {
+  int triangle_amount = 50;
+  float twice_pi_over_triangle_amount = (2.0f * M_PI) / triangle_amount;
+  float x_radius = width_ / 2;
+  float y_radius = height_ / 2;
+
   glPushMatrix();
+
+  glRotatef(rotation_, width_ / 2, height_ / 2, 0);
+  glTranslatef(x_, y_, 0);
 
   glColor3ub(r_, g_, b_);
 
-  glRotatef(rotation_, width_ / 2, height_ / 2, 0);
-
-  glTranslatef(x_, y_, 0);
-  glRectf(
-    0,
-    0,
-    width_,
-    height_
-    );
+  //Filled circle
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex2f(x_radius, y_radius); //Center of circle
+  for (int i = 0; i <= triangle_amount; i++) {
+    glVertex2f(
+      x_radius + (x_radius * cos(i * twice_pi_over_triangle_amount)),
+      y_radius + (y_radius * sin(i * twice_pi_over_triangle_amount))
+      );
+  }
+  glEnd();
 
   glLineWidth(2.5);
   glColor3f(0.0f, 0.0f, 0.0f);
 
-  glBegin(GL_LINES);
-    glVertex2f(0, 0);
-    glVertex2f(width_, 0);
-
-    glVertex2f(width_, 0);
-    glVertex2f(width_, height_);
-
-    glVertex2f(width_, height_);
-    glVertex2f(0, height_);
-
-    glVertex2f(0, height_);
-    glVertex2f(0, 0);
+  //Outline
+  glBegin(GL_LINE_LOOP);
+  for (int i = 0; i <= triangle_amount; i++) {
+    glVertex2f(
+      x_radius + (x_radius * cos(i * twice_pi_over_triangle_amount)),
+      y_radius + (y_radius * sin(i * twice_pi_over_triangle_amount))
+      );
+  }
   glEnd();
 
-  //Will Draw 4 small gray squares on each corner of this rectangle
+  //Will Draw 4 small gray squares on each corner of this circle (Like it's a rectangle)
   if (selected) {
     glColor3ub(128, 128, 128);
 
@@ -108,13 +112,17 @@ void CRectangle::Draw()
   glPopMatrix();
 }
 
-void CRectangle::Update()
+void CCircle::Update()
 {
 
 }
 
-bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
+bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
 {
+  float x_radius = width_ / 2;
+  float y_radius = height_ / 2;
+  float click_focus;
+
   //Convert mouse coordinates to "my world" coordinates
   mouse_x = (mouse_x - 320) / 320;
   mouse_y = -(mouse_y - 480);
@@ -134,6 +142,15 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
     }
   }
 
+  click_focus = (pow(mouse_x - (x_ + x_radius), 2) / pow(x_radius, 2)) + (pow(mouse_y - (y_ + y_radius), 2) / pow(y_radius, 2));
+
+  if (click_focus <= 1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+
   if (mouse_x > x_ && mouse_x < x_ + width_ &&
     mouse_y > y_ && mouse_y < y_ + height_)
   {
@@ -144,7 +161,7 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   }
 }
 
-void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
+void CCircle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
 {
   for (BorderRect rect : border_rects_) {
     if (rect.selected)
@@ -154,17 +171,17 @@ void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
     }
   }
 
-  //If none of the border rects are selected, it means that the this CRectangle itself is selected, therefore it moves.
+  //If none of the border rects are selected, it means that the this CCircle itself is selected, therefore it moves.
   Move(mouse_x_offset, mouse_y_offset);
 }
 
-void CRectangle::Move(float mouse_x_offset, float mouse_y_offset)
+void CCircle::Move(float mouse_x_offset, float mouse_y_offset)
 {
   x_ += mouse_x_offset / 320;
   y_ += mouse_y_offset / 240;
 }
 
-void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
+void CCircle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
 {
   mouse_x_offset = mouse_x_offset / 320;
   mouse_y_offset = mouse_y_offset / 240;
@@ -265,10 +282,10 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
   set_border_rects_();
 }
 
-void CRectangle::Rotate(float mouse_x_offset, float mouse_y_offset)
+void CCircle::Rotate(float mouse_x_offset, float mouse_y_offset)
 {
   mouse_x_offset = mouse_x_offset / 320;
   mouse_y_offset = mouse_y_offset / 240;
-  
+
   rotation_ += mouse_x_offset * 360;
 }

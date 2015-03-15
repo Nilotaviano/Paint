@@ -22,22 +22,16 @@ ImageButton::~ImageButton()
 }
 
 void ImageButton::Draw() {
-  float outLineOffSet = 0.02f;
   if (selected) {
-    glColor3ub(0, 0, 255);
-    glRectf(
-      x_ - outLineOffSet,
-      y_ - outLineOffSet,
-      x_ + width_ + outLineOffSet,
-      y_ + height_ + outLineOffSet);
-  }
-  else {
-    glColor3ub(255, 255, 255);
-    glRectf(
-      x_ - outLineOffSet,
-      y_ - outLineOffSet,
-      x_ + width_ + outLineOffSet,
-      y_ + height_ + outLineOffSet);
+    glColor3ub(0, 0, 150);
+    glLineWidth(4);
+    
+    glBegin(GL_LINE_LOOP);
+      glVertex2f(x_, y_);
+      glVertex2f(x_ + width_, y_);
+      glVertex2f(x_ + width_, y_ + height_);
+      glVertex2f(x_, y_ + height_);
+    glEnd();
   }
 
   glColor3ub(color_.r, color_.g, color_.b);

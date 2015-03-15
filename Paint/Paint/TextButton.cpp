@@ -34,14 +34,6 @@ void TextButton::Draw() {
 			x_ + width_ + outLineOffSet,
 			y_ + height_ + outLineOffSet);
 	}
-	else {
-		glColor3ub(255, 255, 255);
-		glRectf(
-			x_ - outLineOffSet,
-			y_ - outLineOffSet,
-			x_ + width_ + outLineOffSet,
-			y_ + height_ + outLineOffSet);
-	}
 
   glColor3ub(color_.r, color_.g, color_.b);
 	glRectf(

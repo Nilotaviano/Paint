@@ -5,13 +5,15 @@
 #include <GL\GLU.h>
 
 #include "CRectangle.h"
+#include "CCircle.h"
 #include "ImageButton.h"
 
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::Resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1, std::placeholders::_2)),
-button_(new ImageButton(-0.95f, 0, 0.05, 0.05, 0, 0, 0, std::bind(&Paint::CreateQuad, this)))
+p_quad_button_(new ImageButton(-0.95f, 0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
+p_circle_button_(new ImageButton(-0.95f, -0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
 {
   shapes_.push_front(new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0));
 }
@@ -139,7 +141,7 @@ void Paint::Close()
 
 void Paint::Update()
 {
-  //pStateManager_->Update(inputHandler_, currentFrameTime - previousFrameTime);
+  //pStateManager_->Update(inputHandler_, current_frame_time_ - previous_frame_time_);
 }
 
 void Paint::Draw()
@@ -149,7 +151,8 @@ void Paint::Draw()
   for (std::list<IShape *>::reverse_iterator iterator = shapes_.rbegin(); iterator != shapes_.rend(); iterator++) {
      (*iterator)->Draw();
   }
-  button_->Draw();
+  p_quad_button_->Draw();
+  p_circle_button_->Draw();
 }
 
 void Paint::Resize()
@@ -170,29 +173,36 @@ void Paint::Resize()
 
 void Paint::HandleClick(int mouse_x, int mouse_y)
 {
-  if (button_->IsMouseOver(mouse_x, mouse_y)) {
-    button_->HandleClick();
+  if (p_quad_button_->IsMouseOver(mouse_x, mouse_y)) {
+    p_quad_button_->HandleClick();
+  }
+  else if (p_circle_button_->IsMouseOver(mouse_x, mouse_y)) {
+    p_circle_button_->HandleClick();
   }
   else {
     for (IShape* shape : shapes_) {
       if (shape->IsMouseOver(mouse_x, mouse_y)) {
         shape->selected = true;
 
-        //Gotta remove the shape from current position and push_front, so it's drawn first.
+        //Gotta remove the shape from current position and push_front, so it's drawn last.
         shapes_.remove(shape);
         shapes_.push_front(shape);
+        inputHandler_.set_p_shape_(shape);
 
-        inputHandler_.set_shape(shape);
         return;
       }
     }
-
-    inputHandler_.set_shape(nullptr);
   }
+  //Must remove previous shape on inputHandler_ if no quad was selected.
+  inputHandler_.set_p_shape_(nullptr);
 }
 
 void Paint::CreateQuad() {
   shapes_.push_front(new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0));
+}
+
+void Paint::CreateCircle() {
+  shapes_.push_front(new CCircle(0, 0, 0.2, 0.2, 0, 255, 0));
 }
 
 void Paint::Run() {
@@ -203,8 +213,8 @@ void Paint::Run() {
   else
   {
     SDL_Event event;
-    currentFrameTime = SDL_GetTicks();
-    previousFrameTime = currentFrameTime;
+    current_frame_time_ = SDL_GetTicks();
+    previous_frame_time_ = current_frame_time_;
 
     while (!quit)
     {
@@ -214,11 +224,11 @@ void Paint::Run() {
         inputHandler_.handleInput(event);
       }
 
-      if (SDL_GetTicks() - previousFrameTime > 0) {
-        currentFrameTime = SDL_GetTicks();
+      if (SDL_GetTicks() - previous_frame_time_ > 0) {
+        current_frame_time_ = SDL_GetTicks();
         Update();
         Draw();
-        previousFrameTime = currentFrameTime;
+        previous_frame_time_ = current_frame_time_;
       }
 
       //Update screen

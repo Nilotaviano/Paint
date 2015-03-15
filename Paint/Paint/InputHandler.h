@@ -16,7 +16,7 @@ public:
 	void handleInput(SDL_Event event);
 	bool isKeyPressed(SDL_Keycode key);
   bool isLMouseButtonPressed() { return l_mouse_button_; }
-  void set_shape(IShape* shape);
+  void set_p_shape_(IShape* shape);
 private:
   std::function<void()> p_resize_function_;
   std::function<void(int, int)> p_handle_click_function;
@@ -27,5 +27,5 @@ private:
 	bool keys_[KEYBOARD_SIZE];
   bool l_mouse_button_;
 
-  IShape* shape_;
+  IShape* p_shape_;
 };

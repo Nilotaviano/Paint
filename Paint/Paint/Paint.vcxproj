@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCircle.cpp" />
     <ClCompile Include="ImageButton.cpp" />
     <ClCompile Include="TextButton.cpp" />
     <ClCompile Include="IButton.cpp" />
@@ -21,6 +22,7 @@
     <ClCompile Include="CRectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CCircle.h" />
     <ClInclude Include="ImageButton.h" />
     <ClInclude Include="TextButton.h" />
     <ClInclude Include="IButton.h" />

@@ -39,6 +39,9 @@
     <ClCompile Include="ImageButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CCircle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputHandler.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
