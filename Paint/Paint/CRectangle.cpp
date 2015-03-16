@@ -65,9 +65,14 @@ void CRectangle::Draw()
 
   glColor3ub(r_, g_, b_);
 
-  glRotatef(rotation_, width_ / 2, height_ / 2, 0);
+  //Rotation
+  glTranslatef(width_/2, height_/2, .0f);
+  glRotatef(rotation_, .0f , .0f, 1.0f);
+  glTranslatef(-width_ / 2, -height_ / 2, .0f);
 
+  //Translates the rectangle
   glTranslatef(x_, y_, 0);
+
   glRectf(
     0,
     0,
@@ -75,7 +80,12 @@ void CRectangle::Draw()
     height_
     );
 
-  //Will draw 4 small gray squares on each corner of this rectangle
+  glLoadIdentity();
+
+  //Translates the border rectangles
+  glTranslatef(x_, y_, 0);
+
+  //Will draw 4 small gray squares on the sides and corners of the rectangle
   if (selected) {
     glColor3ub(128, 128, 128);
 
@@ -88,6 +98,7 @@ void CRectangle::Draw()
         );
     }
   }
+
   glPopMatrix();
 }
 
@@ -124,6 +135,26 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   }
   else {
     return false;
+  }
+}
+
+void CRectangle::ReceiveMouseClick(SDL_MouseButtonEvent event) {
+  //Convert mouse coordinates to "my world" coordinates
+  float mouse_x = (event.x - 320) / 320;
+  float mouse_y = -(event.y - 480);
+  mouse_y = (mouse_y - 240) / 240;
+
+  if (event.button == SDL_BUTTON_LEFT) {
+    for (BorderRect &rect : border_rects_) {
+      if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
+        mouse_y > y_ + rect.y && mouse_y < y_ + rect.y + rect.height)
+      {
+        rect.selected = true;
+      }
+      else {
+        rect.selected = false;
+      }
+    }
   }
 }
 

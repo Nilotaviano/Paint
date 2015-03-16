@@ -9,7 +9,7 @@
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
-inputHandler_(&quit, std::bind(&Paint::resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1, std::placeholders::_2))
+inputHandler_(&quit, std::bind(&Paint::resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1))
 {
   shape_ = new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0);
 }
@@ -163,9 +163,10 @@ void Paint::resize()
   glLoadIdentity();
 }
 
-void Paint::HandleClick(int mouse_x, int mouse_y)
+void Paint::HandleClick(SDL_MouseButtonEvent event)
 {
-  if (shape_->IsMouseOver(mouse_x, mouse_y)) {
+  if (shape_->IsMouseOver(event.x, event.y)) {
+    shape_->ReceiveMouseClick(event);
     shape_->selected = true;
     inputHandler_.set_shape(shape_);
   }

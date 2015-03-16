@@ -4,11 +4,12 @@
 #include "Paint.h"
 
 
-InputHandler::InputHandler(bool* quit, std::function<void()> resize_function, std::function<void(int, int)> handle_click_function)
+InputHandler::InputHandler(bool* quit, std::function<void()> resize_function, std::function<void(SDL_MouseButtonEvent)> handle_click_function)
 : p_quit_(quit),
 p_resize_function_(resize_function),
 p_handle_click_function(handle_click_function),
 l_mouse_button_(false),
+r_mouse_button_(false),
 shape_(nullptr)
 {
   for (int i = 0; i < KEYBOARD_SIZE; i++) {
@@ -68,15 +69,21 @@ void InputHandler::handleKeyboard(SDL_KeyboardEvent kbEvent)
 void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
   switch (event.type) {
   case SDL_MOUSEBUTTONDOWN:
+    p_handle_click_function(event);
     if (event.button == SDL_BUTTON_LEFT) {
-      p_handle_click_function(event.x, event.y);
       l_mouse_button_ = true;
+    }
+    else if (event.button == SDL_BUTTON_RIGHT) {
+      r_mouse_button_ = true;
     }
     break;
   case SDL_MOUSEBUTTONUP:
     if (event.button == SDL_BUTTON_LEFT) {
       shape_ = nullptr;
       l_mouse_button_ = false;
+    }
+    else if (event.button == SDL_BUTTON_RIGHT) {
+      r_mouse_button_ = false;
     }
     break;
   }
