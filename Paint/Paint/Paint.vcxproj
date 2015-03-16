@@ -11,7 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CCircle.cpp" />
+    <ClCompile Include="ImageButton.cpp" />
+    <ClCompile Include="TextButton.cpp" />
+    <ClCompile Include="IButton.cpp" />
     <ClCompile Include="IShape.cpp" />
     <ClCompile Include="Paint.cpp" />
     <ClCompile Include="InputHandler.cpp" />
@@ -19,7 +22,10 @@
     <ClCompile Include="CRectangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Button.h" />
+    <ClInclude Include="CCircle.h" />
+    <ClInclude Include="ImageButton.h" />
+    <ClInclude Include="TextButton.h" />
+    <ClInclude Include="IButton.h" />
     <ClInclude Include="IShape.h" />
     <ClInclude Include="Paint.h" />
     <ClInclude Include="InputHandler.h" />

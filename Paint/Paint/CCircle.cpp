@@ -1,12 +1,11 @@
-﻿#include "CRectangle.h"
+#include "CCircle.h"
 
 #include <SDL_opengl.h>
 #include <GL\GLU.h>
 #include <math.h>
 #include <stdio.h>
 
-
-CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float angle)
+CCircle::CCircle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float angle)
 : x_(x), y_(y),
 width_(width), height_(height),
 r_(r), g_(g), b_(b),
@@ -16,7 +15,7 @@ IShape()
   set_border_rects_();
 }
 
-void CRectangle::set_border_rects_() {
+void CCircle::set_border_rects_() {
   //Sides
   //Left
   border_rects_[0].x = -0.01;
@@ -54,18 +53,20 @@ void CRectangle::set_border_rects_() {
   border_rects_[7].position = BorderRectPosition::TOP_RIGHT;
 }
 
-CRectangle::~CRectangle()
+CCircle::~CCircle()
 {
 
 }
 
-void CRectangle::Draw()
+void CCircle::Draw()
 {
+  int triangle_amount = 50;
+  float twice_pi_over_triangle_amount = (2.0f * M_PI) / triangle_amount;
   float x_radius = width_ / 2;
   float y_radius = height_ / 2;
 
   glPushMatrix();
-
+  
   glColor3ub(r_, g_, b_);
 
   glTranslatef(x_, y_, 0);
@@ -75,31 +76,31 @@ void CRectangle::Draw()
   glRotatef(angle_, 0, 0, 1.0f);
   glTranslatef(-(x_radius), -(y_radius), 0);
 
-  glRectf(
-    0,
-    0,
-    width_,
-    height_
-    );
+  //Filled circle
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex2f(x_radius, y_radius); //Center of circle
+  for (int i = 0; i <= triangle_amount; i++) {
+    glVertex2f(
+      x_radius + (x_radius * cos(i * twice_pi_over_triangle_amount)),
+      y_radius + (y_radius * sin(i * twice_pi_over_triangle_amount))
+      );
+  }
+  glEnd();
 
   glLineWidth(2.5);
   glColor3f(0.0f, 0.0f, 0.0f);
 
-  glBegin(GL_LINES);
-    glVertex2f(0, 0);
-    glVertex2f(width_, 0);
-
-    glVertex2f(width_, 0);
-    glVertex2f(width_, height_);
-
-    glVertex2f(width_, height_);
-    glVertex2f(0, height_);
-
-    glVertex2f(0, height_);
-    glVertex2f(0, 0);
+  //Outline
+  glBegin(GL_LINE_LOOP);
+  for (int i = 0; i <= triangle_amount; i++) {
+    glVertex2f(
+      x_radius + (x_radius * cos(i * twice_pi_over_triangle_amount)),
+      y_radius + (y_radius * sin(i * twice_pi_over_triangle_amount))
+      );
+  }
   glEnd();
 
-  //Will Draw 4 small gray squares on each corner of this rectangle
+  //Will Draw 4 small gray squares on each corner of this circle (Like it's a rectangle)
   if (selected) {
     glColor3ub(128, 128, 128);
 
@@ -112,19 +113,19 @@ void CRectangle::Draw()
         );
     }
   }
-
   glPopMatrix();
 }
 
-void CRectangle::Update()
+void CCircle::Update()
 {
 
 }
 
-bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
+bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
 {
   float x_radius = width_ / 2;
   float y_radius = height_ / 2;
+  float click_focus;
 
   //Convert mouse coordinates to "my world" coordinates
   mouse_x = (mouse_x - 320) / 320;
@@ -147,6 +148,7 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
     mouse_y = new_mouse_y + (y_ + y_radius);
   }
 
+
   if (selected) {
     for (BorderRect &rect : border_rects_) {
       if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
@@ -161,9 +163,9 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
     }
   }
 
-  if (mouse_x > x_ && mouse_x < x_ + width_ &&
-    mouse_y > y_ && mouse_y < y_ + height_)
-  {
+  click_focus = (pow(mouse_x - (x_ + x_radius), 2) / pow(x_radius, 2)) + (pow(mouse_y - (y_ + y_radius), 2) / pow(y_radius, 2));
+
+  if (click_focus <= 1) {
     return true;
   }
   else {
@@ -171,27 +173,7 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   }
 }
 
-void CRectangle::ReceiveMouseClick(SDL_MouseButtonEvent event) {
-  //Convert mouse coordinates to "my world" coordinates
-  float mouse_x = (event.x - 320) / 320;
-  float mouse_y = -(event.y - 480);
-  mouse_y = (mouse_y - 240) / 240;
-
-  if (event.button == SDL_BUTTON_LEFT) {
-    for (BorderRect &rect : border_rects_) {
-      if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
-        mouse_y > y_ + rect.y && mouse_y < y_ + rect.y + rect.height)
-      {
-        rect.selected = true;
-      }
-      else {
-        rect.selected = false;
-      }
-    }
-  }
-}
-
-void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
+void CCircle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
 {
   for (BorderRect rect : border_rects_) {
     if (rect.selected)
@@ -201,17 +183,17 @@ void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
     }
   }
 
-  //If none of the border rects are selected, it means that the this CRectangle itself is selected, therefore it moves.
+  //If none of the border rects are selected, it means that the this CCircle itself is selected, therefore it moves.
   Move(mouse_x_offset, mouse_y_offset);
 }
 
-void CRectangle::Move(float mouse_x_offset, float mouse_y_offset)
+void CCircle::Move(float mouse_x_offset, float mouse_y_offset)
 {
   x_ += mouse_x_offset / 320;
   y_ += mouse_y_offset / 240;
 }
 
-void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
+void CCircle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
 {
   mouse_x_offset = mouse_x_offset / 320;
   mouse_y_offset = mouse_y_offset / 240;
@@ -220,42 +202,42 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
 
   case BorderRectPosition::LEFT:
     if (width_ - mouse_x_offset > 0) {
-    x_ += mouse_x_offset;
-    width_ -= mouse_x_offset;
+      x_ += mouse_x_offset;
+      width_ -= mouse_x_offset;
     }
     break;
   case BorderRectPosition::RIGHT:
     if (width_ + mouse_x_offset > 0) {
-    width_ += mouse_x_offset;
+      width_ += mouse_x_offset;
   }
     break;
   case BorderRectPosition::TOP:
     if (height_ + mouse_y_offset > 0) {
-    height_ += mouse_y_offset;
+      height_ += mouse_y_offset;
     }
     break;
   case BorderRectPosition::BOTTOM:
     if (height_ - mouse_y_offset > 0) {
-    y_ += mouse_y_offset;
-    height_ -= mouse_y_offset;
+      y_ += mouse_y_offset;
+      height_ -= mouse_y_offset;
     }
     break;
   case BorderRectPosition::BOTTOM_LEFT:
     if (width_ - mouse_x_offset > 0 &&
         height_ - mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      x_ += mouse_x_offset;
-      width_ -= mouse_x_offset;
-      y_ += mouse_x_offset;
-      height_ -= mouse_x_offset;
-    }
-    else {
-      x_ += mouse_y_offset;
-      width_ -= mouse_y_offset;
-      y_ += mouse_y_offset;
-      height_ -= mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        x_ += mouse_x_offset;
+        width_ -= mouse_x_offset;
+        y_ += mouse_x_offset;
+        height_ -= mouse_x_offset;
+      }
+      else {
+        x_ += mouse_y_offset;
+        width_ -= mouse_y_offset;
+        y_ += mouse_y_offset;
+        height_ -= mouse_y_offset;
+      }
     }
     break;
 
@@ -263,16 +245,16 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ + mouse_x_offset > 0 &&
         height_ - mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      width_ += mouse_x_offset;
-      y_ -= mouse_x_offset;
-      height_ += mouse_x_offset;
-    }
-    else {
-      width_ -= mouse_y_offset;
-      y_ += mouse_y_offset;
-      height_ -= mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        width_ += mouse_x_offset;
+        y_ -= mouse_x_offset;
+        height_ += mouse_x_offset;
+      }
+      else {
+        width_ -= mouse_y_offset;
+        y_ += mouse_y_offset;
+        height_ -= mouse_y_offset;
+      }
     }
     break;
 
@@ -280,16 +262,16 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ - mouse_x_offset > 0 &&
         height_ + mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      x_ += mouse_x_offset;
-      width_ -= mouse_x_offset;
-      height_ -= mouse_x_offset;
-    }
-    else {
-      x_ -= mouse_y_offset;
-      width_ += mouse_y_offset;
-      height_ += mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        x_ += mouse_x_offset;
+        width_ -= mouse_x_offset;
+        height_ -= mouse_x_offset;
+      }
+      else {
+        x_ -= mouse_y_offset;
+        width_ += mouse_y_offset;
+        height_ += mouse_y_offset;
+      }
     }
     break;
 
@@ -297,14 +279,14 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ + mouse_x_offset > 0 &&
       height_ + mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      width_ += mouse_x_offset;
-      height_ += mouse_x_offset;
-    }
-    else {
-      width_ += mouse_y_offset;
-      height_ += mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        width_ += mouse_x_offset;
+        height_ += mouse_x_offset;
+      }
+      else {
+        width_ += mouse_y_offset;
+        height_ += mouse_y_offset;
+      }
     }
     break;
   }
@@ -312,10 +294,10 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
   set_border_rects_();
 }
 
-void CRectangle::Rotate(float mouse_x_offset, float mouse_y_offset)
+void CCircle::Rotate(float mouse_x_offset, float mouse_y_offset)
 {
   mouse_x_offset = mouse_x_offset / 320;
   mouse_y_offset = mouse_y_offset / 240;
-  
+
   angle_ += mouse_x_offset * 360;
 }

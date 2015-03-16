@@ -5,20 +5,24 @@
 #include <GL\GLU.h>
 
 #include "CRectangle.h"
+#include "CCircle.h"
+#include "ImageButton.h"
 
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1))
+p_quad_button_(new ImageButton(-0.95f, 0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
+p_circle_button_(new ImageButton(-0.95f, -0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
 {
-  shape_ = new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0);
+  shapes_.push_front(new CCircle(0, 0, 0.2, 0.2, 0, 255, 0));
 }
 
 Paint::~Paint()
 {
 }
 
-bool Paint::init()
+bool Paint::Init()
 {
 	//Initialization flag
 	bool success = true;
@@ -61,7 +65,7 @@ bool Paint::init()
 				}
 
 				//Initialize OpenGL
-				if (!initGL())
+        if (!InitGL())
 				{
 					printf("Unable to initialize OpenGL!\n");
 					success = false;
@@ -73,7 +77,7 @@ bool Paint::init()
 	return success;
 }
 
-bool Paint::initGL()
+bool Paint::InitGL()
 {
 	bool success = true;
 	GLenum error = GL_NO_ERROR;
@@ -125,7 +129,7 @@ bool Paint::initGL()
 	return success;
 }
 
-void Paint::close()
+void Paint::Close()
 {
 	//Destroy window	
 	SDL_DestroyWindow(pSDLWindow_);
@@ -135,19 +139,23 @@ void Paint::close()
 	SDL_Quit();
 }
 
-void Paint::update() 
+void Paint::Update()
 {
-	//pStateManager_->update(inputHandler_, currentFrameTime - previousFrameTime);
+  //pStateManager_->Update(inputHandler_, current_frame_time_ - previous_frame_time_);
 }
 
-void Paint::draw()
+void Paint::Draw()
 {
-	//pStateManager_->draw();
+  //pStateManager_->Draw();
   glClear(GL_COLOR_BUFFER_BIT);
-  shape_->Draw();
+  for (std::list<IShape *>::reverse_iterator iterator = shapes_.rbegin(); iterator != shapes_.rend(); iterator++) {
+     (*iterator)->Draw();
+}
+  p_quad_button_->Draw();
+  p_circle_button_->Draw();
 }
 
-void Paint::resize()
+void Paint::Resize()
 {
   int w, h;
   SDL_GetWindowSize(pSDLWindow_, &w, &h);
@@ -165,23 +173,48 @@ void Paint::resize()
 
 void Paint::HandleClick(SDL_MouseButtonEvent event)
 {
-  if (shape_->IsMouseOver(event.x, event.y)) {
-    shape_->ReceiveMouseClick(event);
-    shape_->selected = true;
-    inputHandler_.set_shape(shape_);
+  if (p_quad_button_->IsMouseOver(event.x, event.y)) {
+    p_quad_button_->HandleClick();
   }
+  else if (p_circle_button_->IsMouseOver(event.x, event.y)) {
+    p_circle_button_->HandleClick();
+  }
+  else {
+    for (IShape* shape : shapes_) {
+      if (shape->IsMouseOver(event.x, event.y)) {
+        shape->selected = true;
+
+        //Gotta remove the shape from current position and push_front, so it's drawn last.
+        shapes_.remove(shape);
+        shapes_.push_front(shape);
+        inputHandler_.set_p_shape_(shape);
+        shape_->ReceiveMouseClick(event);
+        return;
+      }
+    }
+  }
+  //Must remove previous shape on inputHandler_ if no quad was selected.
+  inputHandler_.set_p_shape_(nullptr);
 }
 
-void Paint::run() {
-	if (!init())
+void Paint::CreateQuad() {
+  shapes_.push_front(new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0));
+  }
+
+void Paint::CreateCircle() {
+  shapes_.push_front(new CCircle(0, 0, 0.2, 0.2, 0, 255, 0));
+}
+
+void Paint::Run() {
+  if (!Init())
 	{
 		printf("Failed to initialize!\n");
 	}
 	else
 	{
 		SDL_Event event;
-		currentFrameTime = SDL_GetTicks();
-		previousFrameTime = currentFrameTime;
+    current_frame_time_ = SDL_GetTicks();
+    previous_frame_time_ = current_frame_time_;
 
 		while (!quit)
 		{
@@ -191,11 +224,11 @@ void Paint::run() {
 				inputHandler_.handleInput(event);
 			}
 
-			if (SDL_GetTicks() - previousFrameTime > 0) {
-				currentFrameTime = SDL_GetTicks();
-				update();
-				draw();
-				previousFrameTime = currentFrameTime;
+      if (SDL_GetTicks() - previous_frame_time_ > 0) {
+        current_frame_time_ = SDL_GetTicks();
+        Update();
+        Draw();
+        previous_frame_time_ = current_frame_time_;
 			}
 
 			//Update screen
@@ -203,6 +236,6 @@ void Paint::run() {
 		}
 	}
 
-	//Free resources and close SDL
-	close();
+  //Free resources and Close SDL
+  Close();
 }

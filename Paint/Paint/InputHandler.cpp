@@ -10,7 +10,7 @@ p_resize_function_(resize_function),
 p_handle_click_function(handle_click_function),
 l_mouse_button_(false),
 r_mouse_button_(false),
-shape_(nullptr)
+p_shape_(nullptr)
 {
   for (int i = 0; i < KEYBOARD_SIZE; i++) {
     keys_[i] = false;
@@ -79,7 +79,6 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
     break;
   case SDL_MOUSEBUTTONUP:
     if (event.button == SDL_BUTTON_LEFT) {
-      shape_ = nullptr;
       l_mouse_button_ = false;
     }
     else if (event.button == SDL_BUTTON_RIGHT) {
@@ -90,8 +89,8 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
 }
 
 void InputHandler::HandleMouseMotion(SDL_MouseMotionEvent event) {
-  if (l_mouse_button_ && shape_ != nullptr) {
-    shape_->ReceiveMouseMotion(event.xrel, -event.yrel);  
+  if (l_mouse_button_ && p_shape_ != nullptr) {
+    p_shape_->ReceiveMouseMotion(event.xrel, -event.yrel);  
   }
 }
 
@@ -102,5 +101,18 @@ bool InputHandler::isKeyPressed(SDL_Keycode key)
   }
   else {
     return false;
+  }
+}
+
+void InputHandler::set_p_shape_(IShape* shape)
+{
+  if (p_shape_ != nullptr) {
+    p_shape_->selected = false;
+  }
+
+  p_shape_ = shape; 
+  //passed shape can still be a nullptr
+  if (p_shape_ != nullptr) {
+    shape->selected = true;
   }
 }
