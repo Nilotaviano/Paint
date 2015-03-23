@@ -13,6 +13,7 @@ public:
   void Resize(float x_offset, float y_offset, BorderRectPosition position);
   void Rotate(float x_offset, float y_offset);
   bool IsMouseOver(float mouse_x, float mouse_y);
+  void ReceiveMouseClick(SDL_MouseButtonEvent event);
   void ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset);
 
 private:
@@ -26,6 +27,7 @@ private:
   unsigned char b_;
 
   float angle_;
+  int click_type_;  //SDL_BUTTON_LEFT SDL_BUTTON_RIGHT
 
   //These rectangles will be drawn on this rectangle's borders when selected = true
   BorderRect border_rects_[8];

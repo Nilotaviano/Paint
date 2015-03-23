@@ -112,6 +112,7 @@ void CRectangle::Draw()
         );
     }
   }
+
   glPopMatrix();
 }
 
@@ -176,6 +177,26 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   }
 }
 
+void CRectangle::ReceiveMouseClick(SDL_MouseButtonEvent event) {
+  //Convert mouse coordinates to "my world" coordinates
+  float mouse_x = (event.x - 320) / 320;
+  float mouse_y = -(event.y - 480);
+  mouse_y = (mouse_y - 240) / 240;
+
+  if (event.button == SDL_BUTTON_LEFT) {
+    for (BorderRect &rect : border_rects_) {
+      if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
+        mouse_y > y_ + rect.y && mouse_y < y_ + rect.y + rect.height)
+      {
+        rect.selected = true;
+      }
+      else {
+        rect.selected = false;
+      }
+    }
+  }
+}
+
 void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
 {
   for (BorderRect rect : border_rects_) {
@@ -205,42 +226,42 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
 
   case BorderRectPosition::LEFT:
     if (width_ - mouse_x_offset > 0) {
-      x_ += mouse_x_offset;
-      width_ -= mouse_x_offset;
+    x_ += mouse_x_offset;
+    width_ -= mouse_x_offset;
     }
     break;
   case BorderRectPosition::RIGHT:
     if (width_ + mouse_x_offset > 0) {
-      width_ += mouse_x_offset;
+    width_ += mouse_x_offset;
   }
     break;
   case BorderRectPosition::TOP:
     if (height_ + mouse_y_offset > 0) {
-      height_ += mouse_y_offset;
+    height_ += mouse_y_offset;
     }
     break;
   case BorderRectPosition::BOTTOM:
     if (height_ - mouse_y_offset > 0) {
-      y_ += mouse_y_offset;
-      height_ -= mouse_y_offset;
+    y_ += mouse_y_offset;
+    height_ -= mouse_y_offset;
     }
     break;
   case BorderRectPosition::BOTTOM_LEFT:
     if (width_ - mouse_x_offset > 0 &&
         height_ - mouse_y_offset > 0)
     {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        x_ += mouse_x_offset;
-        width_ -= mouse_x_offset;
-        y_ += mouse_x_offset;
-        height_ -= mouse_x_offset;
-      }
-      else {
-        x_ += mouse_y_offset;
-        width_ -= mouse_y_offset;
-        y_ += mouse_y_offset;
-        height_ -= mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset;
+      width_ -= mouse_x_offset;
+      y_ += mouse_x_offset;
+      height_ -= mouse_x_offset;
+    }
+    else {
+      x_ += mouse_y_offset;
+      width_ -= mouse_y_offset;
+      y_ += mouse_y_offset;
+      height_ -= mouse_y_offset;
+    }
     }
     break;
 
@@ -248,16 +269,16 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ + mouse_x_offset > 0 &&
         height_ - mouse_y_offset > 0)
     {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        width_ += mouse_x_offset;
-        y_ -= mouse_x_offset;
-        height_ += mouse_x_offset;
-      }
-      else {
-        width_ -= mouse_y_offset;
-        y_ += mouse_y_offset;
-        height_ -= mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      width_ += mouse_x_offset;
+      y_ -= mouse_x_offset;
+      height_ += mouse_x_offset;
+    }
+    else {
+      width_ -= mouse_y_offset;
+      y_ += mouse_y_offset;
+      height_ -= mouse_y_offset;
+    }
     }
     break;
 
@@ -265,16 +286,16 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ - mouse_x_offset > 0 &&
         height_ + mouse_y_offset > 0)
     {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        x_ += mouse_x_offset;
-        width_ -= mouse_x_offset;
-        height_ -= mouse_x_offset;
-      }
-      else {
-        x_ -= mouse_y_offset;
-        width_ += mouse_y_offset;
-        height_ += mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset;
+      width_ -= mouse_x_offset;
+      height_ -= mouse_x_offset;
+    }
+    else {
+      x_ -= mouse_y_offset;
+      width_ += mouse_y_offset;
+      height_ += mouse_y_offset;
+    }
     }
     break;
 
@@ -282,14 +303,14 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ + mouse_x_offset > 0 &&
       height_ + mouse_y_offset > 0)
     {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        width_ += mouse_x_offset;
-        height_ += mouse_x_offset;
-      }
-      else {
-        width_ += mouse_y_offset;
-        height_ += mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      width_ += mouse_x_offset;
+      height_ += mouse_x_offset;
+    }
+    else {
+      width_ += mouse_y_offset;
+      height_ += mouse_y_offset;
+    }
     }
     break;
   }
