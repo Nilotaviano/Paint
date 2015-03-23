@@ -20,7 +20,7 @@ private:
 	bool InitGL();
   void Resize();
 	void Close();
-  void HandleClick(int mouse_x, int mouse_y);
+  void HandleClick(SDL_MouseButtonEvent event);
   void CreateQuad();
   void CreateCircle();
 

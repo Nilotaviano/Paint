@@ -11,11 +11,11 @@
 Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
-inputHandler_(&quit, std::bind(&Paint::resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1))
+inputHandler_(&quit, std::bind(&Paint::Resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1)),
 p_quad_button_(new ImageButton(-0.95f, 0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
 p_circle_button_(new ImageButton(-0.95f, -0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
 {
-  shapes_.push_front(new CCircle(0, 0, 0.2, 0.2, 0, 255, 0));
+  shapes_.push_front(new CRectangle(0, 0, 0.2, 0.2, 255, 0, 0));
 }
 
 Paint::~Paint()
@@ -188,7 +188,7 @@ void Paint::HandleClick(SDL_MouseButtonEvent event)
         shapes_.remove(shape);
         shapes_.push_front(shape);
         inputHandler_.set_p_shape_(shape);
-        shape_->ReceiveMouseClick(event);
+        //shape->ReceiveMouseClick(event);
         return;
       }
     }

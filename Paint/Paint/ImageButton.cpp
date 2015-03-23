@@ -54,7 +54,7 @@ bool ImageButton::IsMouseOver(float mouse_x, float mouse_y)
   screenWidth = vPort[2];
   screenHeight = vPort[3];
 
-  mouse_x = (mouse_x - (screenWidth / 2) / (screenWidth / 2));
+  mouse_x = (mouse_x - (screenWidth / 2)) / (screenWidth / 2);
   mouse_y = -(mouse_y - screenHeight);
   mouse_y = (mouse_y - (screenHeight / 2)) / (screenHeight / 2);
 

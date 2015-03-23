@@ -112,7 +112,6 @@ void CRectangle::Draw()
         );
     }
   }
-
   glPopMatrix();
 }
 
@@ -125,6 +124,7 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
 {
   float x_radius = width_ / 2;
   float y_radius = height_ / 2;
+  float click_focus;
   int screenWidth;
   int screenHeight;
   int vPort[4];
@@ -133,7 +133,8 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   screenWidth = vPort[2];
   screenHeight = vPort[3];
 
-  mouse_x = (mouse_x - (screenWidth / 2) / (screenWidth / 2));
+  //Convert mouse coordinates to "my world" coordinates
+  mouse_x = (mouse_x - (screenWidth / 2)) / (screenWidth / 2);
   mouse_y = -(mouse_y - screenHeight);
   mouse_y = (mouse_y - (screenHeight / 2)) / (screenHeight / 2);
 
@@ -207,7 +208,7 @@ void CRectangle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
     }
   }
 
-  //If none of the border rects are selected, it means that the this CRectangle itself is selected, therefore it moves.
+  //If none of the border rects are selected, it means that the this CCircle itself is selected, therefore it moves.
   Move(mouse_x_offset, mouse_y_offset);
 }
 
@@ -219,83 +220,91 @@ void CRectangle::Move(float mouse_x_offset, float mouse_y_offset)
 
 void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
 {
-  mouse_x_offset = mouse_x_offset / 320;
-  mouse_y_offset = mouse_y_offset / 240;
+  int screenWidth;
+  int screenHeight;
+  int vPort[4];
+
+  glGetIntegerv(GL_VIEWPORT, vPort);
+  screenWidth = vPort[2];
+  screenHeight = vPort[3];
+
+  mouse_x_offset = mouse_x_offset / (screenWidth / 2);
+  mouse_y_offset = mouse_y_offset / (screenHeight / 2);
 
   switch (position) {
 
   case BorderRectPosition::LEFT:
     if (width_ - mouse_x_offset > 0) {
-    x_ += mouse_x_offset;
-    width_ -= mouse_x_offset;
+      x_ += mouse_x_offset;
+      width_ -= mouse_x_offset;
     }
     break;
   case BorderRectPosition::RIGHT:
     if (width_ + mouse_x_offset > 0) {
-    width_ += mouse_x_offset;
-  }
+      width_ += mouse_x_offset;
+    }
     break;
   case BorderRectPosition::TOP:
     if (height_ + mouse_y_offset > 0) {
-    height_ += mouse_y_offset;
+      height_ += mouse_y_offset;
     }
     break;
   case BorderRectPosition::BOTTOM:
     if (height_ - mouse_y_offset > 0) {
-    y_ += mouse_y_offset;
-    height_ -= mouse_y_offset;
+      y_ += mouse_y_offset;
+      height_ -= mouse_y_offset;
     }
     break;
   case BorderRectPosition::BOTTOM_LEFT:
     if (width_ - mouse_x_offset > 0 &&
-        height_ - mouse_y_offset > 0)
+      height_ - mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      x_ += mouse_x_offset;
-      width_ -= mouse_x_offset;
-      y_ += mouse_x_offset;
-      height_ -= mouse_x_offset;
-    }
-    else {
-      x_ += mouse_y_offset;
-      width_ -= mouse_y_offset;
-      y_ += mouse_y_offset;
-      height_ -= mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        x_ += mouse_x_offset;
+        width_ -= mouse_x_offset;
+        y_ += mouse_x_offset;
+        height_ -= mouse_x_offset;
+      }
+      else {
+        x_ += mouse_y_offset;
+        width_ -= mouse_y_offset;
+        y_ += mouse_y_offset;
+        height_ -= mouse_y_offset;
+      }
     }
     break;
 
   case BorderRectPosition::BOTTOM_RIGHT:
     if (width_ + mouse_x_offset > 0 &&
-        height_ - mouse_y_offset > 0)
+      height_ - mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      width_ += mouse_x_offset;
-      y_ -= mouse_x_offset;
-      height_ += mouse_x_offset;
-    }
-    else {
-      width_ -= mouse_y_offset;
-      y_ += mouse_y_offset;
-      height_ -= mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        width_ += mouse_x_offset;
+        y_ -= mouse_x_offset;
+        height_ += mouse_x_offset;
+      }
+      else {
+        width_ -= mouse_y_offset;
+        y_ += mouse_y_offset;
+        height_ -= mouse_y_offset;
+      }
     }
     break;
 
   case BorderRectPosition::TOP_LEFT:
     if (width_ - mouse_x_offset > 0 &&
-        height_ + mouse_y_offset > 0)
+      height_ + mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      x_ += mouse_x_offset;
-      width_ -= mouse_x_offset;
-      height_ -= mouse_x_offset;
-    }
-    else {
-      x_ -= mouse_y_offset;
-      width_ += mouse_y_offset;
-      height_ += mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        x_ += mouse_x_offset;
+        width_ -= mouse_x_offset;
+        height_ -= mouse_x_offset;
+      }
+      else {
+        x_ -= mouse_y_offset;
+        width_ += mouse_y_offset;
+        height_ += mouse_y_offset;
+      }
     }
     break;
 
@@ -303,14 +312,14 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
     if (width_ + mouse_x_offset > 0 &&
       height_ + mouse_y_offset > 0)
     {
-    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-      width_ += mouse_x_offset;
-      height_ += mouse_x_offset;
-    }
-    else {
-      width_ += mouse_y_offset;
-      height_ += mouse_y_offset;
-    }
+      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+        width_ += mouse_x_offset;
+        height_ += mouse_x_offset;
+      }
+      else {
+        width_ += mouse_y_offset;
+        height_ += mouse_y_offset;
+      }
     }
     break;
   }
