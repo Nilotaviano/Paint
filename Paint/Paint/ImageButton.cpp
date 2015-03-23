@@ -46,9 +46,17 @@ void ImageButton::Draw() {
 bool ImageButton::IsMouseOver(float mouse_x, float mouse_y)
 {
   //Convert mouse coordinates to "my world" coordinates
-  mouse_x = (mouse_x - 320) / 320;
-  mouse_y = -(mouse_y - 480);
-  mouse_y = (mouse_y - 240) / 240;
+  int screenWidth;
+  int screenHeight;
+  int vPort[4];
+
+  glGetIntegerv(GL_VIEWPORT, vPort);
+  screenWidth = vPort[2];
+  screenHeight = vPort[3];
+
+  mouse_x = (mouse_x - (screenWidth / 2) / (screenWidth / 2));
+  mouse_y = -(mouse_y - screenHeight);
+  mouse_y = (mouse_y - (screenHeight / 2)) / (screenHeight / 2);
 
   if (mouse_x > x_ && mouse_x < x_ + width_ &&
     mouse_y > y_ && mouse_y < y_ + height_)

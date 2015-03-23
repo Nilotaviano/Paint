@@ -126,11 +126,18 @@ bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
   float x_radius = width_ / 2;
   float y_radius = height_ / 2;
   float click_focus;
+  int screenWidth;
+  int screenHeight;
+  int vPort[4];
+
+  glGetIntegerv(GL_VIEWPORT, vPort);
+  screenWidth = vPort[2];
+  screenHeight = vPort[3];
 
   //Convert mouse coordinates to "my world" coordinates
-  mouse_x = (mouse_x - 320) / 320;
-  mouse_y = -(mouse_y - 480);
-  mouse_y = (mouse_y - 240) / 240;
+  mouse_x = (mouse_x - (screenWidth / 2)) / (screenWidth / 2);
+  mouse_y = -(mouse_y - screenHeight);
+  mouse_y = (mouse_y - (screenHeight / 2)) / (screenHeight / 2);
 
   /*Rotate point*/
   if (angle_ != 0) {
@@ -189,14 +196,30 @@ void CCircle::ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset)
 
 void CCircle::Move(float mouse_x_offset, float mouse_y_offset)
 {
-  x_ += mouse_x_offset / 320;
-  y_ += mouse_y_offset / 240;
+  int screenWidth;
+  int screenHeight;
+  int vPort[4];
+
+  glGetIntegerv(GL_VIEWPORT, vPort);
+  screenWidth = vPort[2];
+  screenHeight = vPort[3];
+
+  x_ += mouse_x_offset / (screenWidth / 2);
+  y_ += mouse_y_offset / (screenHeight / 2);
 }
 
 void CCircle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
 {
-  mouse_x_offset = mouse_x_offset / 320;
-  mouse_y_offset = mouse_y_offset / 240;
+  int screenWidth;
+  int screenHeight;
+  int vPort[4];
+
+  glGetIntegerv(GL_VIEWPORT, vPort);
+  screenWidth = vPort[2];
+  screenHeight = vPort[3];
+
+  mouse_x_offset = mouse_x_offset / (screenWidth / 2);
+  mouse_y_offset = mouse_y_offset / (screenHeight / 2);
 
   switch (position) {
 
@@ -296,8 +319,16 @@ void CCircle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosit
 
 void CCircle::Rotate(float mouse_x_offset, float mouse_y_offset)
 {
-  mouse_x_offset = mouse_x_offset / 320;
-  mouse_y_offset = mouse_y_offset / 240;
+  int screenWidth;
+  int screenHeight;
+  int vPort[4];
+
+  glGetIntegerv(GL_VIEWPORT, vPort);
+  screenWidth = vPort[2];
+  screenHeight = vPort[3];
+
+  mouse_x_offset = mouse_x_offset / (screenWidth / 2);
+  mouse_y_offset = mouse_y_offset / (screenHeight / 2);
 
   angle_ += mouse_x_offset * 360;
 }
