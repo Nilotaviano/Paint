@@ -65,15 +65,14 @@ void CRectangle::Draw()
   float y_radius = height_ / 2;
 
   glPushMatrix();
-
   glColor3ub(r_, g_, b_);
 
   glTranslatef(x_, y_, 0);
 
   //Center on origin before rotating
-  glTranslatef((x_radius), (y_radius), 0);
+  glTranslatef(x_radius, y_radius, 0);
   glRotatef(angle_, 0, 0, 1.0f);
-  glTranslatef(-(x_radius), -(y_radius), 0);
+  glTranslatef(-x_radius, -y_radius, 0);
 
   glRectf(
     0,
@@ -98,6 +97,7 @@ void CRectangle::Draw()
     glVertex2f(0, height_);
     glVertex2f(0, 0);
   glEnd();
+
 
   //Will Draw 4 small gray squares on each corner of this rectangle
   if (selected) {
