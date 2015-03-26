@@ -2,11 +2,23 @@
 
 #include <SDL.h>
 #include <stdio.h>
+#include <math.h>
 
 class IShape
 {
 public:
   IShape();
+
+  void rotatePoint(float point[2], float angle) {
+    float rad = (-angle) * M_PI / 180;
+    float s = sin(rad);
+    float c = cos(rad);
+    float new_p_x = point[0] * c - point[1] * s;
+    float new_p_y = point[0] * s + point[1] * c;
+
+    point[0] = new_p_x;
+    point[1] = new_p_y;
+  }
 
   virtual ~IShape() {}
 
