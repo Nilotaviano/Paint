@@ -14,6 +14,11 @@ angle_(angle),
 IShape()
 {
   set_border_rects_();
+  for(BorderRect &rect : border_rects_) {
+    rect.height = 0.02f;
+    rect.width = 0.02f;
+    rect.selected = false;
+  }
 }
 
 void CRectangle::set_border_rects_() {
@@ -224,12 +229,29 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
   int screenHeight;
   int vPort[4];
 
+  //Offset must be rotated too.
+  if (angle_ != 0) {
+    float rad = (-angle_) * M_PI / 180;
+    float s = sin(rad);
+    float c = cos(rad);
+	float new_mouse_x;
+	float new_mouse_y;
+
+    new_mouse_x = mouse_x_offset * c - mouse_y_offset * s;
+    new_mouse_y = mouse_x_offset * s + mouse_y_offset * c;
+
+    mouse_x_offset = new_mouse_x;
+    mouse_y_offset = new_mouse_y;
+  }
+
   glGetIntegerv(GL_VIEWPORT, vPort);
   screenWidth = vPort[2];
   screenHeight = vPort[3];
 
   mouse_x_offset = mouse_x_offset / (screenWidth / 2);
   mouse_y_offset = mouse_y_offset / (screenHeight / 2);
+
+
 
   switch (position) {
 

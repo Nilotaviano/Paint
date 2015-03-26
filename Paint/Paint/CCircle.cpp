@@ -13,6 +13,11 @@ angle_(angle),
 IShape()
 {
   set_border_rects_();
+  for(BorderRect &rect : border_rects_) {
+    rect.height = 0.02f;
+    rect.width = 0.02f;
+    rect.selected = false;
+  }
 }
 
 void CCircle::set_border_rects_() {

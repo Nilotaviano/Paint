@@ -42,9 +42,9 @@ protected:
   {
     float x;
     float y;
-    float width = 0.02f;
-    float height = 0.02f;
+    float width;
+    float height;
     BorderRectPosition position;
-    bool selected = false;
+    bool selected;
   };
 };
