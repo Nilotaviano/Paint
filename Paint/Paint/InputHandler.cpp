@@ -89,7 +89,7 @@ void InputHandler::HandleMouseButton(SDL_MouseButtonEvent event) {
 }
 
 void InputHandler::HandleMouseMotion(SDL_MouseMotionEvent event) {
-  if (l_mouse_button_ && p_shape_ != nullptr) {
+  if ((l_mouse_button_ || r_mouse_button_) && p_shape_ != nullptr) {
     p_shape_->ReceiveMouseMotion(event.xrel, -event.yrel);  
   }
 }

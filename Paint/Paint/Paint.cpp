@@ -12,10 +12,10 @@ Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::Resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1)),
-p_quad_button_(new ImageButton(-0.95f, 0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
-p_circle_button_(new ImageButton(-0.95f, -0.05f, 0.05f, 0.05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
+p_quad_button_(new ImageButton(-.95f, .05f, .05f, .05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
+p_circle_button_(new ImageButton(-.95f, -.05f, .05f, .05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
 {
-  shapes_.push_front(new CRectangle(-0.1f, -0.1f, 0.2, 0.2, 255, 0, 0, 60));
+  shapes_.push_front(new CRectangle(-.0f, -.0f, .2f, .2f, 255, 0, 0, 0));
 }
 
 Paint::~Paint()
@@ -116,7 +116,7 @@ bool Paint::InitGL()
   
 
 	//Initialize clear color
-	glClearColor(1.f, 1.f, 1.f, 0.f);
+	glClearColor(1.0f, 1.0f, 1.0f, .0f);
 
 	//Check for error
 	error = glGetError();
@@ -148,6 +148,15 @@ void Paint::Draw()
 {
   //pStateManager_->Draw();
   glClear(GL_COLOR_BUFFER_BIT);
+
+  glLineWidth(.5);
+  glBegin(GL_LINES);
+  glVertex2f(0, -1);
+  glVertex2f(0, 1);
+  glVertex2f(-1, 0);
+  glVertex2f(1, 0);
+  glEnd();
+
   for (std::list<IShape *>::reverse_iterator iterator = shapes_.rbegin(); iterator != shapes_.rend(); iterator++) {
      (*iterator)->Draw();
 }
@@ -188,7 +197,7 @@ void Paint::HandleClick(SDL_MouseButtonEvent event)
         shapes_.remove(shape);
         shapes_.push_front(shape);
         inputHandler_.set_p_shape_(shape);
-        //shape->ReceiveMouseClick(event);
+        shape->ReceiveMouseClick(event);
         return;
       }
     }
@@ -198,11 +207,11 @@ void Paint::HandleClick(SDL_MouseButtonEvent event)
 }
 
 void Paint::CreateQuad() {
-  shapes_.push_front(new CRectangle(-0.1f, -0.1f, 0.2, 0.2, 255, 0, 0));
+  shapes_.push_front(new CRectangle(-.0f, -.0f, .2, .2, 255, 0, 0));
   }
 
 void Paint::CreateCircle() {
-  shapes_.push_front(new CCircle(-0.1f, -0.1f, 0.2, 0.2, 0, 255, 0));
+  shapes_.push_front(new CCircle(-.0f, -.0f, .2, .2, 0, 255, 0));
 }
 
 void Paint::Run() {
