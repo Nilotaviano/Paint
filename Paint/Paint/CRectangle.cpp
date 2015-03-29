@@ -74,10 +74,10 @@ void CRectangle::set_border_rects_() {
 void CRectangle::set_shear_rects() {
   //Above the shape
   shear_rects[0].x = -.02f;
-  shear_rects[0].y = y_radius_ + .02f;
+  shear_rects[0].y = abs(y_radius_) + .02f;
   shear_rects[0].position = BorderRectPosition::TOP;
   //Right side of the shape
-  shear_rects[1].x = x_radius_ + .02f;
+  shear_rects[1].x = abs(x_radius_) + .02f;
   shear_rects[1].y = -.02f;
   shear_rects[1].position = BorderRectPosition::RIGHT;
 }
@@ -161,11 +161,12 @@ void CRectangle::Draw()
 
 bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
 {
-  float click_focus;
   int screenWidth;
   int screenHeight;
   int vPort[4];
   float p[2];
+  float abs_x_radius = abs(x_radius_);
+  float abs_y_radius = abs(y_radius_);
 
   glGetIntegerv(GL_VIEWPORT, vPort);
   screenWidth = vPort[2];
@@ -211,7 +212,7 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
       if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
         mouse_y > y_ + rect.y && mouse_y < y_ + rect.y + rect.height)
       {
-      rect.selected = true;
+        rect.selected = true;
         return true;
       }
       else {
@@ -227,8 +228,8 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
     rect.selected = false;
   }
 
-  if (mouse_x > x_ - x_radius_ && mouse_x < x_ + x_radius_ &&
-    mouse_y > y_ - y_radius_ && mouse_y < y_ + y_radius_)
+  if (mouse_x > x_ - abs_x_radius && mouse_x < x_ + abs_x_radius &&
+    mouse_y > y_ - abs_y_radius && mouse_y < y_ + abs_y_radius)
   {
     return true;
   }
@@ -303,102 +304,75 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
   switch (position) {
 
   case BorderRectPosition::LEFT:
-    if (width_ - mouse_x_offset > 0) {
-      x_ += mouse_x_offset / 2;
-      width_ -= mouse_x_offset;
-    }
+    x_ += mouse_x_offset / 2;
+    width_ -= mouse_x_offset;
     break;
   case BorderRectPosition::RIGHT:
-    if (width_ + mouse_x_offset > 0) {
-      x_ += mouse_x_offset / 2;
-      width_ += mouse_x_offset;
-    }
+    x_ += mouse_x_offset / 2;
+    width_ += mouse_x_offset;
     break;
   case BorderRectPosition::TOP:
-    if (height_ + mouse_y_offset > 0) {
-      y_ += mouse_y_offset / 2;
-      height_ += mouse_y_offset;
-    }
+    y_ += mouse_y_offset / 2;
+    height_ += mouse_y_offset;
     break;
   case BorderRectPosition::BOTTOM:
-    if (height_ - mouse_y_offset > 0) {
+    y_ += mouse_y_offset / 2;
+    height_ -= mouse_y_offset;
+    break;
+  case BorderRectPosition::BOTTOM_LEFT:
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset / 2;
+      width_ -= mouse_x_offset;
+      y_ += mouse_x_offset / 2;
+      height_ -= mouse_x_offset;
+    }
+    else {
+      x_ += mouse_y_offset / 2;
+      width_ -= mouse_y_offset;
       y_ += mouse_y_offset / 2;
       height_ -= mouse_y_offset;
     }
     break;
-  case BorderRectPosition::BOTTOM_LEFT:
-    if (width_ - mouse_x_offset > 0 &&
-      height_ - mouse_y_offset > 0)
-    {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        x_ += mouse_x_offset / 2;
-        width_ -= mouse_x_offset;
-        y_ += mouse_x_offset / 2;
-        height_ -= mouse_x_offset;
-      }
-      else {
-        x_ += mouse_y_offset / 2;
-        width_ -= mouse_y_offset;
-        y_ += mouse_y_offset / 2;
-        height_ -= mouse_y_offset;
-      }
-    }
-    break;
-
   case BorderRectPosition::BOTTOM_RIGHT:
-    if (width_ + mouse_x_offset > 0 &&
-      height_ - mouse_y_offset > 0)
-    {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        x_ += mouse_x_offset / 2;
-        width_ += mouse_x_offset;
-        y_ -= mouse_x_offset / 2;
-        height_ += mouse_x_offset;
-      }
-      else {
-        x_ -= mouse_y_offset / 2;
-        width_ -= mouse_y_offset;
-        y_ += mouse_y_offset / 2;
-        height_ -= mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset / 2;
+      width_ += mouse_x_offset;
+      y_ -= mouse_x_offset / 2;
+      height_ += mouse_x_offset;
+    }
+    else {
+      x_ -= mouse_y_offset / 2;
+      width_ -= mouse_y_offset;
+      y_ += mouse_y_offset / 2;
+      height_ -= mouse_y_offset;
     }
     break;
-
   case BorderRectPosition::TOP_LEFT:
-    if (width_ - mouse_x_offset > 0 &&
-      height_ - mouse_y_offset > 0)
-    {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        x_ += mouse_x_offset / 2;
-        width_ -= mouse_x_offset;
-        y_ -= mouse_x_offset / 2;
-        height_ -= mouse_x_offset;
-      }
-      else {
-        x_ -= mouse_y_offset / 2;
-        width_ += mouse_y_offset;
-        y_ += mouse_y_offset / 2;
-        height_ += mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset / 2;
+      width_ -= mouse_x_offset;
+      y_ -= mouse_x_offset / 2;
+      height_ -= mouse_x_offset;
+    }
+    else {
+      x_ -= mouse_y_offset / 2;
+      width_ += mouse_y_offset;
+      y_ += mouse_y_offset / 2;
+      height_ += mouse_y_offset;
     }
     break;
-
   case BorderRectPosition::TOP_RIGHT:
-    if (width_ + mouse_x_offset > 0 &&
-      height_ + mouse_y_offset > 0)
-    {
-      if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
-        x_ += mouse_x_offset / 2;
-        width_ += mouse_x_offset;
-        y_ += mouse_x_offset / 2;
-        height_ += mouse_x_offset;
-      }
-      else {
-        x_ += mouse_y_offset / 2;
-        width_ += mouse_y_offset;
-        y_ += mouse_y_offset / 2;
-        height_ += mouse_y_offset;
-      }
+    if (abs(mouse_x_offset) >= abs(mouse_y_offset)) {
+      x_ += mouse_x_offset / 2;
+      width_ += mouse_x_offset;
+      y_ += mouse_x_offset / 2;
+      height_ += mouse_x_offset;
+    }
+    else {
+      x_ += mouse_y_offset / 2;
+      width_ += mouse_y_offset;
+      y_ += mouse_y_offset / 2;
+      height_ += mouse_y_offset;
     }
     break;
   }
