@@ -425,6 +425,7 @@ void CCircle::Rotate(float mouse_x_offset, float mouse_y_offset)
   mouse_y_offset = mouse_y_offset / (screenHeight / 2);
 
   angle_ += mouse_x_offset * 360;
+  angle_ += mouse_y_offset * 360;
 }
 
 void CCircle::Shear(float mouse_x_offset, float mouse_y_offset, BorderRectPosition position)
