@@ -33,9 +33,6 @@
     <ClCompile Include="IButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ImageButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,9 +54,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageButton.h">
