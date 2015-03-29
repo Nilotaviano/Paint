@@ -8,13 +8,15 @@ class ImageButton :
   public IButton
 {
 public:
-  ImageButton(float x, float y, float width, float height, int r, int g, int b, std::function<void()> callback_function);
+  ImageButton(float x, float y, float width, float height, int r, int g, int b, std::function<void()> callback_function, int shape);
   ~ImageButton();
   void Draw();
   bool IsMouseOver(float mouse_x, float mouse_y);
   void HandleClick();
   bool selected;
 private:
+
+  int shape_;
   float x_;
   float y_;
   float width_;

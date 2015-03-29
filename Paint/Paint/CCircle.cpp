@@ -132,9 +132,8 @@ void CCircle::Draw()
   glLoadIdentity();
 
   glTranslatef(x_, y_, 0);
-
-  //Center on origin before rotating
   glRotatef(angle_, 0, 0, 1.0f);
+  shearMatrix(x_shear_, y_shear_);
 
   //Will Draw 4 small gray squares on each corner of this rectangle
   if (selected) {
@@ -282,6 +281,7 @@ void CCircle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosit
   int screenWidth;
   int screenHeight;
   int vPort[4];
+  float p[2];
 
   glGetIntegerv(GL_VIEWPORT, vPort);
   screenWidth = vPort[2];
@@ -289,6 +289,10 @@ void CCircle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPosit
 
   mouse_x_offset = mouse_x_offset / (screenWidth / 2);
   mouse_y_offset = mouse_y_offset / (screenHeight / 2);
+
+  rotatePoint(mouse_x_offset, mouse_y_offset, -angle_, p);
+  mouse_x_offset = p[0];
+  mouse_y_offset = p[1];
 
   switch (position) {
 

@@ -1,8 +1,9 @@
 #include "ImageButton.h"
 #include <SDL_opengl.h>
 
-ImageButton::ImageButton(float x, float y, float width, float height, int r, int g, int b, std::function<void()> callback_function)
-: callback_function_(callback_function)
+ImageButton::ImageButton(float x, float y, float width, float height, int r, int g, int b, std::function<void()> callback_function, int shape)
+: callback_function_(callback_function),
+shape_(shape)
 {
   selected = false;
   x_ = x;
@@ -22,18 +23,6 @@ ImageButton::~ImageButton()
 }
 
 void ImageButton::Draw() {
-  if (selected) {
-    glColor3ub(0, 0, 150);
-    glLineWidth(4);
-    
-    glBegin(GL_LINE_LOOP);
-      glVertex2f(x_, y_);
-      glVertex2f(x_ + width_, y_);
-      glVertex2f(x_ + width_, y_ + height_);
-      glVertex2f(x_, y_ + height_);
-    glEnd();
-  }
-
   glColor3ub(color_.r, color_.g, color_.b);
   glRectf(
     x_,
@@ -41,6 +30,34 @@ void ImageButton::Draw() {
     x_ + width_,
     y_ + height_);
 
+  if (shape_ == GL_QUADS) {
+    glColor3ub(255, 0, 0);
+    glRectf(
+      x_ + 0.025f,
+      y_ + 0.025f,
+      x_ + width_ - 0.025f,
+      y_ + height_ - 0.025f);
+  }
+  else if (shape_ == GL_TRIANGLE_FAN) {
+    float twice_pi_over_triangle_amount = (2.0f * M_PI) / 25;
+
+    glPushMatrix();
+
+    glTranslatef(x_ + width_ / 2, y_ + height_ / 2, 0);
+    glColor3ub(0, 255, 0);
+
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(0, 0); //Center of circle
+    for (int i = 0; i <= 25; i++) {
+      glVertex2f(
+        (0.025f * cos(i * twice_pi_over_triangle_amount)),
+        (0.025f * sin(i * twice_pi_over_triangle_amount))
+        );
+    }
+    glEnd();
+
+    glPopMatrix();
+  }
 }
 
 bool ImageButton::IsMouseOver(float mouse_x, float mouse_y)

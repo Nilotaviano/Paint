@@ -12,10 +12,9 @@ Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::Resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1)),
-p_quad_button_(new ImageButton(-.95f, .05f, .05f, .05f, 0, 0, 0, std::bind(&Paint::CreateQuad, this))),
-p_circle_button_(new ImageButton(-.95f, -.05f, .05f, .05f, 0, 0, 0, std::bind(&Paint::CreateCircle, this)))
+p_quad_button_(new ImageButton(-.95f, .05f, .1f, .1f, 0, 0, 0, std::bind(&Paint::CreateQuad, this), GL_QUADS)),
+p_circle_button_(new ImageButton(-.95f, -.15f, .1f, .1f, 0, 0, 0, std::bind(&Paint::CreateCircle, this), GL_TRIANGLE_FAN))
 {
-  shapes_.push_front(new CRectangle(-.0f, -.0f, .2f, .2f, 255, 0, 0, 0));
 }
 
 Paint::~Paint()
@@ -86,9 +85,6 @@ bool Paint::InitGL()
   SDL_GetWindowSize(pSDLWindow_, &x, &y);
   glViewport(0, 0, x, y);
 
-	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
-
 	//Initialize Projection Matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -149,12 +145,16 @@ void Paint::Draw()
   //pStateManager_->Draw();
   glClear(GL_COLOR_BUFFER_BIT);
 
+
+  glColor3f(0, 0, 0);
   glLineWidth(.5);
   glBegin(GL_LINES);
-  glVertex2f(0, -1);
-  glVertex2f(0, 1);
-  glVertex2f(-1, 0);
-  glVertex2f(1, 0);
+  for (float i = -1; i <= 1; i += 0.1f) {
+    glVertex2f(i, -1);
+    glVertex2f(i, 1);
+    glVertex2f(-1, i);
+    glVertex2f(1, i);
+  }
   glEnd();
 
   for (std::list<IShape *>::reverse_iterator iterator = shapes_.rbegin(); iterator != shapes_.rend(); iterator++) {
