@@ -74,10 +74,10 @@ void CRectangle::set_border_rects_() {
 void CRectangle::set_shear_rects() {
   //Above the shape
   shear_rects[0].x = -.02f;
-  shear_rects[0].y = y_ + y_radius_ + .02f;
+  shear_rects[0].y = y_radius_ + .02f;
   shear_rects[0].position = BorderRectPosition::TOP;
   //Right side of the shape
-  shear_rects[1].x = x_ + x_radius_ + .02f;
+  shear_rects[1].x = x_radius_ + .02f;
   shear_rects[1].y = -.02f;
   shear_rects[1].position = BorderRectPosition::RIGHT;
 }
@@ -166,6 +166,7 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   int screenWidth;
   int screenHeight;
   int vPort[4];
+  float p[2];
 
   glGetIntegerv(GL_VIEWPORT, vPort);
   screenWidth = vPort[2];
@@ -176,21 +177,21 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
   mouse_y = -(mouse_y - screenHeight);
   mouse_y = (mouse_y - (screenHeight / 2)) / (screenHeight / 2);
 
-  /*Rotate point*/
   if (angle_ != 0) {
-    float rad = (-angle_) * M_PI / 180;
-    float s = sin(rad);
-    float c = cos(rad);
-    //Translate back to origin
     mouse_x -= x_;
     mouse_y -= y_;
-    //Rotate around origin
-    float new_mouse_x = mouse_x * c - mouse_y * s;
-    float new_mouse_y = mouse_x * s + mouse_y * c;
-    //Translate back
-    mouse_x = new_mouse_x + x_;
-    mouse_y = new_mouse_y + y_;
+    //Negative angle for undoing the rotation
+    rotatePoint(mouse_x, mouse_y, -angle_, p);
+    mouse_x = p[0] + x_;
+    mouse_y = p[1] + y_;
   }
+
+  mouse_x -= x_;
+  mouse_y -= y_;
+  //Negative x_shear_ and y_shear_ for unshearing the mouse click point
+  shearPoint(mouse_x, mouse_y, -x_shear_, -y_shear_, p);
+  mouse_x = p[0] + x_;
+  mouse_y = p[1] + y_;
 
   if (selected) {
     for (BorderRect &rect : border_rects_) {

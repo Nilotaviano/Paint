@@ -32,21 +32,24 @@ protected:
 public:
   IShape();
 
-  void rotatePoint(float point[2], float angle) {
-    float rad = (-angle) * M_PI / 180;
+  void rotatePoint(float x, float y, float angle, float point[2]) {
+    float rad = angle * M_PI / 180;
     float s = sin(rad);
     float c = cos(rad);
-    float new_p_x = point[0] * c - point[1] * s;
-    float new_p_y = point[0] * s + point[1] * c;
 
-    point[0] = new_p_x;
-    point[1] = new_p_y;
+    point[0] = x * c - y * s;
+    point[1] = x * s + y * c;
   }
 
-  void shearMatrix(float shearX, float shearY) {
+  void shearPoint(float x, float y, float x_shear, float y_shear, float p[2]) {
+    p[0] = x + y * x_shear;
+    p[1] = y + x * y_shear;
+  }
+
+  void shearMatrix(float x_shear, float y_shear) {
     float m[] = {
-      1, shearY, 0, 0,
-      shearX, 1, 0, 0,
+      1, y_shear, 0, 0,
+      x_shear, 1, 0, 0,
       0, 0, 1, 0,
       0, 0, 0, 1 };
     glMultMatrixf(m);
