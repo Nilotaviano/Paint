@@ -221,6 +221,13 @@ bool CCircle::IsMouseOver(float mouse_x, float mouse_y)
     }
   }
 
+  for (BorderRect &rect : border_rects_) {
+    rect.selected = false;
+  }
+  for (BorderRect &rect : shear_rects) {
+    rect.selected = false;
+  }
+
   click_focus = (pow(mouse_x - x_, 2) / pow(x_radius, 2)) + (pow(mouse_y - y_, 2) / pow(y_radius, 2));
 
   if (click_focus <= 1) {

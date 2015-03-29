@@ -197,6 +197,9 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
       if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
         mouse_y > y_ + rect.y && mouse_y < y_ + rect.y + rect.height)
       {
+        for (BorderRect &rect : border_rects_) {
+          rect.selected = false;
+        }
         rect.selected = true;
         return true;
       }
@@ -208,13 +211,20 @@ bool CRectangle::IsMouseOver(float mouse_x, float mouse_y)
       if (mouse_x > x_ + rect.x && mouse_x < x_ + rect.x + rect.width &&
         mouse_y > y_ + rect.y && mouse_y < y_ + rect.y + rect.height)
       {
-        rect.selected = true;
+      rect.selected = true;
         return true;
       }
       else {
         rect.selected = false;
       }
     }
+  }
+
+  for (BorderRect &rect : border_rects_) {
+    rect.selected = false;
+  }
+  for (BorderRect &rect : shear_rects) {
+    rect.selected = false;
   }
 
   if (mouse_x > x_ - x_radius_ && mouse_x < x_ + x_radius_ &&
