@@ -431,6 +431,7 @@ void CRectangle::Shear(float mouse_x_offset, float mouse_y_offset, BorderRectPos
   int screenWidth;
   int screenHeight;
   int vPort[4];
+  float p[2];
 
   glGetIntegerv(GL_VIEWPORT, vPort);
   screenWidth = vPort[2];
@@ -438,6 +439,10 @@ void CRectangle::Shear(float mouse_x_offset, float mouse_y_offset, BorderRectPos
 
   mouse_x_offset = mouse_x_offset / (screenWidth / 2);
   mouse_y_offset = mouse_y_offset / (screenHeight / 2);
+
+  rotatePoint(mouse_x_offset, mouse_y_offset, -angle_, p);
+  mouse_x_offset = p[0];
+  mouse_y_offset = p[1];
 
   switch (position) {
 
