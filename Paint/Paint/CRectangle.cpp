@@ -1,10 +1,7 @@
 ﻿#include "CRectangle.h"
 
 #include <SDL_opengl.h>
-#include <GL\GLU.h>
 #include <math.h>
-#include <stdio.h>
-
 
 CRectangle::CRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b, float angle)
 : x_(x), y_(y),

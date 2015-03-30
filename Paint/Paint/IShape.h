@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include <SDL.h>
-#include <stdio.h>
 #include <math.h>
 #include <SDL_opengl.h>
 
@@ -69,9 +68,9 @@ public:
 
   virtual bool IsMouseOver(float mouse_x, float mouse_y) { return false; }
 
-  virtual void ReceiveMouseClick(SDL_MouseButtonEvent event) { printf("IReceiveMouseClick\n"); }
+  virtual void ReceiveMouseClick(SDL_MouseButtonEvent event) {}
 
-  virtual void ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset) { printf("IReceiveMouseMotion\n"); }
+  virtual void ReceiveMouseMotion(float mouse_x_offset, float mouse_y_offset) {}
 
   bool selected;
 };

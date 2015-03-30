@@ -1,9 +1,6 @@
 #include "InputHandler.h"
 #include <stdio.h>
 
-#include "Paint.h"
-
-
 InputHandler::InputHandler(bool* quit, std::function<void()> resize_function, std::function<void(SDL_MouseButtonEvent)> handle_click_function)
 : p_quit_(quit),
 p_resize_function_(resize_function),
