@@ -304,19 +304,27 @@ void CRectangle::Resize(float mouse_x_offset, float mouse_y_offset, BorderRectPo
   switch (position) {
 
   case BorderRectPosition::LEFT:
-    x_ += mouse_x_offset / 2;
+    rotatePoint(mouse_x_offset, 0, angle_, p);
+    x_ += p[0] / 2;
+    y_ += p[1] / 2;
     width_ -= mouse_x_offset;
     break;
   case BorderRectPosition::RIGHT:
-    x_ += mouse_x_offset / 2;
+    rotatePoint(mouse_x_offset, 0, angle_, p);
+    x_ += p[0] / 2;
+    y_ += p[1] / 2;
     width_ += mouse_x_offset;
     break;
   case BorderRectPosition::TOP:
-    y_ += mouse_y_offset / 2;
+    rotatePoint(0, mouse_y_offset, angle_, p);
+    x_ += p[0] / 2;
+    y_ += p[1] / 2;
     height_ += mouse_y_offset;
     break;
   case BorderRectPosition::BOTTOM:
-    y_ += mouse_y_offset / 2;
+    rotatePoint(0, mouse_y_offset, angle_, p);
+    x_ += p[0] / 2;
+    y_ += p[1] / 2;
     height_ -= mouse_y_offset;
     break;
   case BorderRectPosition::BOTTOM_LEFT:
