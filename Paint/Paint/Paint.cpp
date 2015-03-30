@@ -12,8 +12,8 @@ Paint::Paint()
 : pSDLWindow_(nullptr), quit(false),
 SCREEN_WIDTH(640), SCREEN_HEIGHT(480),
 inputHandler_(&quit, std::bind(&Paint::Resize, this), std::bind(&Paint::HandleClick, this, std::placeholders::_1)),
-p_quad_button_(new ImageButton(-.95f, .05f, .1f, .1f, 0, 0, 0, std::bind(&Paint::CreateQuad, this), GL_QUADS)),
-p_circle_button_(new ImageButton(-.95f, -.15f, .1f, .1f, 0, 0, 0, std::bind(&Paint::CreateCircle, this), GL_TRIANGLE_FAN))
+p_quad_button_(new ImageButton(-.95f, .05f, .1f, .1f, std::bind(&Paint::CreateQuad, this, std::placeholders::_1), 4, true)),
+p_circle_button_(new ImageButton(-.95f, -.15f, .1f, .1f, std::bind(&Paint::CreateCircle, this, std::placeholders::_1), 25, true))
 {
 }
 
@@ -183,6 +183,7 @@ void Paint::Resize()
 void Paint::HandleClick(SDL_MouseButtonEvent event)
 {
   if (p_quad_button_->IsMouseOver(event.x, event.y)) {
+    p_circle_button_->IsMouseOver(event.x, event.y);  //Just to make it unselect...I know it's ugly
     p_quad_button_->HandleClick();
   }
   else if (p_circle_button_->IsMouseOver(event.x, event.y)) {
@@ -206,12 +207,13 @@ void Paint::HandleClick(SDL_MouseButtonEvent event)
   inputHandler_.set_p_shape_(nullptr);
 }
 
-void Paint::CreateQuad() {
-  shapes_.push_front(new CRectangle(-.0f, -.0f, .2, .2, 255, 0, 0));
+void Paint::CreateQuad(SDL_Color color)
+{
+  shapes_.push_front(new CRectangle(-.0f, -.0f, .2, .2, color.r, color.g, color.b));
   }
 
-void Paint::CreateCircle() {
-  shapes_.push_front(new CCircle(-.0f, -.0f, .2, .2, 0, 255, 0));
+void Paint::CreateCircle(SDL_Color color) {
+  shapes_.push_front(new CCircle(-.0f, -.0f, .2, .2, color.r, color.g, color.b));
 }
 
 void Paint::Run() {

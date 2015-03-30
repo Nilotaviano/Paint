@@ -21,8 +21,8 @@ private:
   void Resize();
 	void Close();
   void HandleClick(SDL_MouseButtonEvent event);
-  void CreateQuad();
-  void CreateCircle();
+  void CreateQuad(SDL_Color color);
+  void CreateCircle(SDL_Color color);
 
 	const int SCREEN_WIDTH;
 	const int SCREEN_HEIGHT;
